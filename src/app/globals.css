@@ -1,26 +1,96 @@
 @import "tailwindcss";
 
+@theme {
+  --color-midnight: #11151B;
+  --color-midnight-surface: #181D25;
+  --color-midnight-card: #1F252E;
+  --color-midnight-border: #2B3441;
+  --color-perf-white: #FAF9F6;
+  --color-blush: #E8A9C3;
+  --color-blush-light: #FBF0F4;
+  --color-blush-hover: #D78FAE;
+  --color-burgundy: #722D4A;
+  --color-burgundy-dark: #4A1C30;
+  --color-burgundy-light: #8E3B5E;
+  --color-volt: #D9FF3F;
+  --color-volt-dark: #BBE02E;
+}
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #11151B;
+  --foreground: #FAF9F6;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  scroll-behavior: smooth;
+  color-scheme: dark;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: #11151B;
+  color: #FAF9F6;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  overflow-x: hidden;
+  selection-background-color: #D9FF3F;
+  selection-color: #11151B;
+}
+
+::selection {
+  background-color: #D9FF3F;
+  color: #11151B;
+}
+
+/* Custom editorial scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #11151B;
+}
+::-webkit-scrollbar-thumb {
+  background: #2B3441;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #722D4A;
+}
+
+/* Glassmorphism subtle accents */
+.editorial-glass {
+  background: rgba(24, 29, 37, 0.75);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(232, 169, 195, 0.12);
+}
+
+.editorial-glass-light {
+  background: rgba(250, 249, 246, 0.05);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* Shimmer & glow effects */
+.glow-volt {
+  box-shadow: 0 0 25px rgba(217, 255, 63, 0.35);
+}
+
+.glow-blush {
+  box-shadow: 0 0 30px rgba(232, 169, 195, 0.25);
+}
+
+/* Marquee animation */
+@keyframes marquee {
+  0% { transform: translateX(0%); }
+  100% { transform: translateX(-50%); }
+}
+
+.animate-marquee {
+  display: flex;
+  width: max-content;
+  animation: marquee 25s linear infinite;
+}
+
+.animate-marquee:hover {
+  animation-play-state: paused;
 }

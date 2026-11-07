@@ -1,69 +1,112 @@
-import Image from "next/image";
+"use client";
 
-export default function Home() {
+import React, { useState } from "react";
+import { PRODUCTS, Product } from "@/lib/data";
+import { useWishlist } from "@/hooks/useWishlist";
+import { Navigation } from "@/components/Navigation";
+import { HeroSection } from "@/components/HeroSection";
+import { MarqueeBanner } from "@/components/MarqueeBanner";
+import { CategorySection } from "@/components/CategorySection";
+import { ProductGrid } from "@/components/ProductGrid";
+import { EditorialSection } from "@/components/EditorialSection";
+import { BestValueSection } from "@/components/BestValueSection";
+import { StoreLocator } from "@/components/StoreLocator";
+import { ProductModal } from "@/components/ProductModal";
+import { WishlistDrawer } from "@/components/WishlistDrawer";
+import { Footer } from "@/components/Footer";
+
+export default function HomePage() {
+  const { wishlist, count, toggleWishlist, isFavorite } = useWishlist();
+  const [selectedCategory, setSelectedCategory] = useState<string>("all");
+  const [searchQuery, setSearchQuery] = useState<string>("");
+  const [isWishlistOpen, setIsWishlistOpen] = useState<boolean>(false);
+  const [quickViewProduct, setQuickViewProduct] = useState<Product | null>(null);
+
+  const handleExploreClick = () => {
+    const el = document.getElementById("products");
+    if (el) el.scrollIntoView({ behavior: "smooth" });
+  };
+
+  const handleStoresClick = () => {
+    const el = document.getElementById("stores");
+    if (el) el.scrollIntoView({ behavior: "smooth" });
+  };
+
+  const handleSelectCategory = (catId: string) => {
+    setSelectedCategory(catId);
+    const el = document.getElementById("products");
+    if (el) el.scrollIntoView({ behavior: "smooth" });
+  };
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert h-5 w-[100px]"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the{" "}
-            <code className="rounded bg-black/[.06] px-1.5 py-0.5 font-mono text-[0.9em] dark:bg-white/[.08]">
-              page.tsx
-            </code>{" "}
-            file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert h-[14px] w-4"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={14}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
-    </div>
+    <main className="min-h-screen bg-[#11151B] text-[#FAF9F6]">
+      {/* 1. Global Navigation Bar */}
+      <Navigation
+        wishlistCount={count}
+        onOpenWishlist={() => setIsWishlistOpen(true)}
+        searchQuery={searchQuery}
+        onSearchChange={setSearchQuery}
+        onSelectCategory={handleSelectCategory}
+      />
+
+      {/* 2. Cinematic Hero Section with LIA */}
+      <HeroSection
+        onExploreClick={handleExploreClick}
+        onStoresClick={handleStoresClick}
+      />
+
+      {/* 3. Infinite Editorial Marquee Ticker */}
+      <MarqueeBanner />
+
+      {/* 4. Curated Category Selection */}
+      <CategorySection
+        selectedCategory={selectedCategory}
+        onSelectCategory={handleSelectCategory}
+      />
+
+      {/* 5. Main Product Grid & Multi-Filter Engine */}
+      <ProductGrid
+        products={PRODUCTS}
+        selectedCategory={selectedCategory}
+        onSelectCategory={setSelectedCategory}
+        searchQuery={searchQuery}
+        onSearchChange={setSearchQuery}
+        wishlist={wishlist}
+        onToggleWishlist={toggleWishlist}
+        onQuickView={setQuickViewProduct}
+      />
+
+      {/* 6. High-Fashion Editorial Lookbook featuring LIA */}
+      <EditorialSection />
+
+      {/* 7. Best Value Under 200k Showcase */}
+      <BestValueSection
+        onQuickView={setQuickViewProduct}
+        onSelectCategory={handleSelectCategory}
+      />
+
+      {/* 8. Local Store Directory & Map Navigation */}
+      <StoreLocator />
+
+      {/* 9. Global Brand Footer */}
+      <Footer />
+
+      {/* Slide-out Wishlist Drawer */}
+      <WishlistDrawer
+        isOpen={isWishlistOpen}
+        onClose={() => setIsWishlistOpen(false)}
+        wishlistIds={wishlist}
+        onRemove={toggleWishlist}
+        onQuickView={setQuickViewProduct}
+      />
+
+      {/* Quick View Product Modal */}
+      <ProductModal
+        product={quickViewProduct}
+        onClose={() => setQuickViewProduct(null)}
+        isFavorite={quickViewProduct ? isFavorite(quickViewProduct.id) : false}
+        onToggleFavorite={toggleWishlist}
+      />
+    </main>
   );
 }
