@@ -1,5 +1,18 @@
 import type { Metadata, Viewport } from "next";
+import { Plus_Jakarta_Sans, Syne } from "next/font/google";
 import "./globals.css";
+
+const jakarta = Plus_Jakarta_Sans({
+  subsets: ["latin", "vietnamese"],
+  display: "swap",
+  variable: "--font-sans",
+});
+
+const syne = Syne({
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--font-display",
+});
 
 export const viewport: Viewport = {
   themeColor: "#11151B",
@@ -48,7 +61,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="vi" className="dark scroll-smooth">
-      <body className="min-h-screen bg-[#11151B] text-[#FAF9F6] antialiased selection:bg-[#D9FF3F] selection:text-[#11151B]">
+      <body className={`${jakarta.variable} ${syne.variable} font-sans min-h-screen bg-[#11151B] text-[#FAF9F6] antialiased selection:bg-[#D9FF3F] selection:text-[#11151B]`}>
         {children}
       </body>
     </html>

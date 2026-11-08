@@ -1,9 +1,9 @@
 "use client";
 
 import React, { useState, useMemo } from "react";
-import { Product, Store, STORES } from "@/lib/data";
+import { Product } from "@/lib/data";
 import { ProductCard } from "./ProductCard";
-import { Search, SlidersHorizontal, ArrowUpDown, RotateCcw } from "lucide-react";
+import { Search, SlidersHorizontal, RotateCcw } from "lucide-react";
 
 interface ProductGridProps {
   products: Product[];
@@ -100,7 +100,7 @@ export const ProductGrid: React.FC<ProductGridProps> = ({
               <span className="w-1.5 h-1.5 rounded-full bg-[#D9FF3F]" />
               BỘ SƯU TẬP TUYỂN CHỌN
             </div>
-            <h2 className="text-3xl sm:text-5xl font-black uppercase tracking-tight text-[#FAF9F6]">
+            <h2 className="text-3xl sm:text-5xl font-black uppercase tracking-tight text-[#FAF9F6] font-display">
               DISCOVER <span className="text-[#E8A9C3]">PRODUCTS</span>
             </h2>
           </div>
@@ -168,7 +168,7 @@ export const ProductGrid: React.FC<ProductGridProps> = ({
             <div className="sm:col-span-3">
               <select
                 value={sortBy}
-                onChange={(e) => setSortBy(e.target.value as any)}
+                onChange={(e) => setSortBy(e.target.value as "featured" | "low" | "high" | "under200")}
                 className="w-full py-2 px-3 rounded-xl bg-[#11151B] border border-[#2B3441] text-xs text-[#FAF9F6] focus:outline-none focus:border-[#E8A9C3] cursor-pointer"
               >
                 <option value="featured">Sắp xếp: Mặc định</option>

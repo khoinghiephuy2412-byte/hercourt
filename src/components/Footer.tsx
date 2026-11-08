@@ -1,6 +1,5 @@
 import React from "react";
-import Link from "next/link";
-import { MapPin, ShieldCheck, Heart, ArrowUp } from "lucide-react";
+import { MapPin, ShieldCheck, ArrowUp } from "lucide-react";
 
 export const Footer: React.FC = () => {
   return (

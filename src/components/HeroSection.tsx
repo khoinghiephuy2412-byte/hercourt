@@ -34,7 +34,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
 
             {/* Campaign Headline */}
             <div className="mb-4">
-              <h1 className="text-4xl sm:text-6xl xl:text-7xl font-black uppercase tracking-[-0.04em] text-[#FAF9F6] leading-[1.02]">
+              <h1 className="text-4xl sm:text-6xl xl:text-7xl font-black uppercase tracking-[-0.03em] text-[#FAF9F6] leading-[1.02] font-display">
                 OWN THE <span className="text-[#D9FF3F]">GAME.</span>
                 <br />
                 WEAR THE <span className="text-[#E8A9C3]">ENERGY.</span>
@@ -58,7 +58,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
             <div className="flex flex-wrap items-center gap-4 mb-10">
               <button
                 onClick={onExploreClick}
-                className="px-7 py-3.5 rounded-full bg-[#D9FF3F] text-[#11151B] font-black text-xs sm:text-sm uppercase tracking-wider hover:bg-[#BBE02E] transition-all transform hover:-translate-y-0.5 shadow-lg shadow-[#D9FF3F]/20 flex items-center gap-2"
+                className="px-7 py-3.5 rounded-full bg-[#D9FF3F] text-[#11151B] font-black text-xs sm:text-sm uppercase tracking-wider hover:bg-[#BBE02E] transition-all transform hover:-translate-y-0.5 shadow-lg shadow-[#D9FF3F]/20 flex items-center gap-2 focus-ring"
               >
                 <span>Khám Phá 22 Mẫu Tuyển Chọn</span>
                 <ArrowUpRight className="w-4 h-4 stroke-[3]" />
@@ -66,7 +66,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
 
               <button
                 onClick={onStoresClick}
-                className="px-6 py-3.5 rounded-full bg-[#181D25] hover:bg-[#2B3441] border border-[#2B3441] text-[#FAF9F6] font-bold text-xs sm:text-sm uppercase tracking-wider transition-all flex items-center gap-2"
+                className="px-6 py-3.5 rounded-full bg-[#181D25] hover:bg-[#2B3441] border border-[#2B3441] text-[#FAF9F6] font-bold text-xs sm:text-sm uppercase tracking-wider transition-all flex items-center gap-2 focus-ring"
               >
                 <MapPin className="w-4 h-4 text-[#E8A9C3]" />
                 <span>Xem 8 Cửa Hàng Biên Hòa</span>

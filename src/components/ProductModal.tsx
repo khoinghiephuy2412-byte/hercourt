@@ -1,10 +1,10 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import Image from "next/image";
 import { Product, STORES, formatVND } from "@/lib/data";
 import { GarmentVisual } from "./GarmentVisual";
-import { X, ExternalLink, Heart, MapPin, ShieldCheck, Tag, Star, Camera, CheckCircle2 } from "lucide-react";
+import { X, ExternalLink, Heart, MapPin, Tag, Star, Camera, CheckCircle2 } from "lucide-react";
 
 interface ProductModalProps {
   product: Product | null;
@@ -19,11 +19,13 @@ export const ProductModal: React.FC<ProductModalProps> = ({
   isFavorite,
   onToggleFavorite,
 }) => {
+  const [prevProductId, setPrevProductId] = useState<string | null>(null);
   const [imageError, setImageError] = useState(false);
 
-  useEffect(() => {
+  if (product && product.id !== prevProductId) {
+    setPrevProductId(product.id);
     setImageError(false);
-  }, [product?.id]);
+  }
 
   if (!product) return null;
 

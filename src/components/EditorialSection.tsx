@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import Image from "next/image";
-import { Sparkles, ArrowRight, Quote, Info } from "lucide-react";
+import { Sparkles, Quote, Info } from "lucide-react";
 
 export const EditorialSection: React.FC = () => {
   const [activeTab, setActiveTab] = useState<number>(0);
@@ -63,7 +63,7 @@ export const EditorialSection: React.FC = () => {
             </span>
           </div>
 
-          <h2 className="text-3xl sm:text-5xl lg:text-6xl font-black uppercase tracking-tight text-[#FAF9F6] leading-[1.05]">
+          <h2 className="text-3xl sm:text-5xl lg:text-6xl font-black uppercase tracking-tight text-[#FAF9F6] leading-[1.05] font-display">
             THE COURT IS YOUR <span className="text-[#D9FF3F]">RUNWAY.</span>
           </h2>
 

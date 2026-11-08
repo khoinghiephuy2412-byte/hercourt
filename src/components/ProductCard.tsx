@@ -22,7 +22,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
   const [imageError, setImageError] = useState(false);
 
   return (
-    <article className="group relative bg-[#181D25] border border-[#2B3441] rounded-2xl overflow-hidden hover:border-[#E8A9C3]/60 transition-all duration-300 flex flex-col justify-between hover:shadow-xl hover:shadow-[#000]/40">
+    <article className="group relative bg-[#181D25] border border-[#2B3441] rounded-2xl overflow-hidden hover:border-[#E8A9C3]/60 transition-all duration-300 flex flex-col justify-between hover:shadow-xl hover:shadow-[#000]/40 card-premium-hover">
       
       {/* Top Media & Visual Area */}
       <div

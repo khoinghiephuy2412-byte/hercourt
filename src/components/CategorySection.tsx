@@ -25,7 +25,7 @@ export const CategorySection: React.FC<CategorySectionProps> = ({
               <span className="w-1.5 h-1.5 rounded-full bg-[#D9FF3F]" />
               DANH MỤC THIẾT KẾ
             </div>
-            <h2 className="text-3xl sm:text-5xl font-black uppercase tracking-tight text-[#FAF9F6]">
+            <h2 className="text-3xl sm:text-5xl font-black uppercase tracking-tight text-[#FAF9F6] font-display">
               SHOP BY <span className="text-[#E8A9C3]">CATEGORY</span>
             </h2>
           </div>

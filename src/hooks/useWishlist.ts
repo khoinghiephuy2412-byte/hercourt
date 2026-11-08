@@ -18,6 +18,7 @@ export function useWishlist() {
           const converted = parsed.map((item) =>
             typeof item === "number" ? `p${item + 1}` : String(item)
           );
+          // eslint-disable-next-line react-hooks/set-state-in-effect
           setWishlist(converted);
         }
       }

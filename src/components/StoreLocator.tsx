@@ -1,8 +1,8 @@
 "use client";
 
 import React, { useState } from "react";
-import { STORES, Store } from "@/lib/data";
-import { MapPin, ExternalLink, Navigation, Phone, Clock, CheckCircle2, AlertCircle } from "lucide-react";
+import { STORES } from "@/lib/data";
+import { MapPin, ExternalLink, Navigation, Phone, Clock } from "lucide-react";
 
 export const StoreLocator: React.FC = () => {
   const [activeFilter, setActiveFilter] = useState<string>("all");
@@ -24,7 +24,7 @@ export const StoreLocator: React.FC = () => {
               <span className="w-1.5 h-1.5 rounded-full bg-[#D9FF3F]" />
               MẠNG LƯỚI ĐỊA PHƯƠNG
             </div>
-            <h2 className="text-3xl sm:text-5xl font-black uppercase tracking-tight text-[#FAF9F6]">
+            <h2 className="text-3xl sm:text-5xl font-black uppercase tracking-tight text-[#FAF9F6] font-display">
               BIÊN HÒA <span className="text-[#E8A9C3]">STORES</span>
             </h2>
           </div>
@@ -72,7 +72,7 @@ export const StoreLocator: React.FC = () => {
           {filteredStores.map((store, index) => (
             <article
               key={store.id}
-              className="bg-[#181D25] border border-[#2B3441] rounded-2xl p-5 hover:border-[#E8A9C3]/50 transition-all duration-300 flex flex-col justify-between group hover:shadow-xl hover:shadow-[#000]/50"
+              className="bg-[#181D25] border border-[#2B3441] rounded-2xl p-5 hover:border-[#E8A9C3]/50 transition-all duration-300 flex flex-col justify-between group hover:shadow-xl hover:shadow-[#000]/50 card-premium-hover"
             >
               <div>
                 {/* Number & Badge */}

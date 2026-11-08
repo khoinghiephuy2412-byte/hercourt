@@ -1,19 +1,18 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import Image from "next/image";
 import { Product, PRODUCTS, formatVND } from "@/lib/data";
 import { GarmentVisual } from "./GarmentVisual";
-import { Tag, ExternalLink, Sparkles, ArrowRight, Camera } from "lucide-react";
+import { ExternalLink, Sparkles, Camera } from "lucide-react";
 
 interface BestValueSectionProps {
   onQuickView: (product: Product) => void;
-  onSelectCategory: (cat: string) => void;
+  onSelectCategory?: (cat: string) => void;
 }
 
 export const BestValueSection: React.FC<BestValueSectionProps> = ({
   onQuickView,
-  onSelectCategory,
 }) => {
   // Products under or equal to 200.000đ sorted ascending
   const budgetProducts = PRODUCTS.filter((p) => p.price <= 200000).sort(
@@ -31,7 +30,7 @@ export const BestValueSection: React.FC<BestValueSectionProps> = ({
               <Sparkles className="w-3.5 h-3.5 text-[#D9FF3F]" />
               GIÁ TỐT NHẤT CHO NGƯỜI MỚI BẮT ĐẦU
             </div>
-            <h2 className="text-3xl sm:text-5xl font-black uppercase tracking-tight text-[#FAF9F6]">
+            <h2 className="text-3xl sm:text-5xl font-black uppercase tracking-tight text-[#FAF9F6] font-display">
               BEST VALUE <span className="text-[#E8A9C3]">UNDER 200K</span>
             </h2>
           </div>
@@ -45,7 +44,7 @@ export const BestValueSection: React.FC<BestValueSectionProps> = ({
           {budgetProducts.map((p) => (
             <div
               key={p.id}
-              className="bg-[#181D25] border border-[#2B3441] rounded-2xl p-4 flex flex-col justify-between group hover:border-[#D9FF3F]/50 transition-all duration-300"
+              className="bg-[#181D25] border border-[#2B3441] rounded-2xl p-4 flex flex-col justify-between group hover:border-[#D9FF3F]/50 transition-all duration-300 card-premium-hover"
             >
               <div>
                 <div className="flex items-center justify-between mb-2">
