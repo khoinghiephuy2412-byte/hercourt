@@ -20,12 +20,26 @@ export const WishlistDrawer: React.FC<WishlistDrawerProps> = ({
   onRemove,
   onQuickView,
 }) => {
+  React.useEffect(() => {
+    if (!isOpen) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [isOpen, onClose]);
+
   if (!isOpen) return null;
 
   const favoriteProducts = PRODUCTS.filter((p) => wishlistIds.includes(p.id));
 
   return (
-    <div className="fixed inset-0 z-50 overflow-hidden">
+    <div
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="wishlist-drawer-title"
+      className="fixed inset-0 z-50 overflow-hidden"
+    >
       {/* Backdrop */}
       <div
         className="absolute inset-0 bg-[#000]/70 backdrop-blur-sm transition-opacity"
@@ -39,12 +53,13 @@ export const WishlistDrawer: React.FC<WishlistDrawerProps> = ({
           <div className="p-6 border-b border-[#2B3441] flex items-center justify-between">
             <div className="flex items-center gap-2">
               <Heart className="w-5 h-5 fill-[#E8A9C3] text-[#E8A9C3]" />
-              <h2 className="text-lg font-black uppercase text-[#FAF9F6] tracking-tight">
+              <h2 id="wishlist-drawer-title" className="text-lg font-black uppercase text-[#FAF9F6] tracking-tight">
                 Mẫu Đã Lưu ({favoriteProducts.length})
               </h2>
             </div>
             <button
               onClick={onClose}
+              aria-label="Đóng danh sách yêu thích"
               className="p-2 rounded-full hover:bg-[#2B3441] text-[#FAF9F6]/70 hover:text-white transition-colors"
             >
               <X className="w-5 h-5" />

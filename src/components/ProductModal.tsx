@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import Image from "next/image";
 import { Product, STORES, formatVND } from "@/lib/data";
 import { GarmentVisual } from "./GarmentVisual";
-import { X, ExternalLink, Heart, MapPin, Tag, Star, Camera, CheckCircle2 } from "lucide-react";
+import { X, ExternalLink, Heart, MapPin, Tag, Camera, CheckCircle2, ShieldCheck } from "lucide-react";
 
 interface ProductModalProps {
   product: Product | null;
@@ -27,6 +27,14 @@ export const ProductModal: React.FC<ProductModalProps> = ({
     setImageError(false);
   }
 
+  React.useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [onClose]);
+
   if (!product) return null;
 
   const store = STORES.find((s) => s.id === product.storeId || s.shortName === product.store);
@@ -38,6 +46,9 @@ export const ProductModal: React.FC<ProductModalProps> = ({
     >
       {/* Modal Dialog Card */}
       <div
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="modal-product-title"
         className="relative w-full max-w-3xl bg-[#181D25] border border-[#2B3441] rounded-3xl overflow-hidden shadow-2xl animate-in zoom-in-95 duration-200"
         onClick={(e) => e.stopPropagation()}
       >
@@ -109,19 +120,19 @@ export const ProductModal: React.FC<ProductModalProps> = ({
               </div>
 
               {/* Title */}
-              <h3 className="text-xl sm:text-2xl font-black uppercase text-[#FAF9F6] tracking-tight leading-tight">
+              <h3 id="modal-product-title" className="text-xl sm:text-2xl font-black uppercase text-[#FAF9F6] tracking-tight leading-tight">
                 {product.name}
               </h3>
 
-              {/* Rating */}
-              <div className="flex items-center gap-1.5 my-2 text-xs text-[#FAF9F6]/70">
-                <div className="flex text-[#D9FF3F]">
-                  {[...Array(5)].map((_, i) => (
-                    <Star key={i} className="w-3.5 h-3.5 fill-[#D9FF3F]" />
-                  ))}
-                </div>
-                <span className="font-bold text-[#FAF9F6]">{product.rating}</span>
-                <span className="text-[#FAF9F6]/40">({product.reviewsCount} lượt quan tâm)</span>
+              {/* Verified Product Metadata */}
+              <div className="flex flex-wrap items-center gap-2 my-2.5 text-xs">
+                <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-[#11151B] border border-[#2B3441] text-[11px] text-[#D9FF3F] font-semibold">
+                  <ShieldCheck className="w-3.5 h-3.5 text-[#D9FF3F]" />
+                  <span>Sản phẩm chính hãng tại {product.store}</span>
+                </span>
+                <span className="text-[11px] text-[#FAF9F6]/50 font-mono">
+                  Xác minh: {product.verifiedDate}
+                </span>
               </div>
 
               {/* Price */}
@@ -134,7 +145,9 @@ export const ProductModal: React.FC<ProductModalProps> = ({
                     {formatVND(product.originalPrice)}
                   </span>
                 )}
-                <span className="text-xs text-[#E8A9C3] font-bold">Giá tham khảo</span>
+                <span className="text-xs text-[#E8A9C3] font-bold px-2 py-0.5 rounded bg-[#722D4A]/40 border border-[#722D4A]">
+                  Giá niêm yết tại shop
+                </span>
               </div>
 
               {/* Description */}
