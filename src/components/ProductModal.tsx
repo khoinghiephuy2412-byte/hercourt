@@ -1,9 +1,10 @@
 "use client";
 
-import React from "react";
+import React, { useState, useEffect } from "react";
+import Image from "next/image";
 import { Product, STORES, formatVND } from "@/lib/data";
 import { GarmentVisual } from "./GarmentVisual";
-import { X, ExternalLink, Heart, MapPin, ShieldCheck, Tag, Star } from "lucide-react";
+import { X, ExternalLink, Heart, MapPin, ShieldCheck, Tag, Star, Camera, CheckCircle2 } from "lucide-react";
 
 interface ProductModalProps {
   product: Product | null;
@@ -18,13 +19,21 @@ export const ProductModal: React.FC<ProductModalProps> = ({
   isFavorite,
   onToggleFavorite,
 }) => {
+  const [imageError, setImageError] = useState(false);
+
+  useEffect(() => {
+    setImageError(false);
+  }, [product?.id]);
+
   if (!product) return null;
 
   const store = STORES.find((s) => s.id === product.storeId || s.shortName === product.store);
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#000]/80 backdrop-blur-md animate-in fade-in duration-200">
-      
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#000]/80 backdrop-blur-md animate-in fade-in duration-200"
+      onClick={onClose}
+    >
       {/* Modal Dialog Card */}
       <div
         className="relative w-full max-w-3xl bg-[#181D25] border border-[#2B3441] rounded-3xl overflow-hidden shadow-2xl animate-in zoom-in-95 duration-200"
@@ -42,21 +51,45 @@ export const ProductModal: React.FC<ProductModalProps> = ({
         <div className="grid grid-cols-1 md:grid-cols-12 gap-6 p-6 sm:p-8">
           
           {/* Left Column: Visual Display */}
-          <div className="md:col-span-5 relative aspect-square rounded-2xl bg-gradient-to-b from-[#1F252E] to-[#151921] border border-[#2B3441] flex items-center justify-center p-6 overflow-hidden">
+          <div className="md:col-span-5 relative aspect-square rounded-2xl bg-[#151921] border border-[#2B3441] flex items-center justify-center p-4 overflow-hidden">
             <div
-              className="absolute inset-0 opacity-25 blur-3xl pointer-events-none"
+              className="absolute inset-0 opacity-20 blur-3xl pointer-events-none"
               style={{ backgroundColor: product.colorHex }}
             />
-            <GarmentVisual
-              shape={product.shape}
-              colorHex={product.colorHex}
-              className="w-full h-full max-h-[240px] drop-shadow-2xl"
-            />
-            {product.badge && (
-              <span className="absolute top-3 left-3 text-[10px] font-black uppercase tracking-wider px-2.5 py-1 rounded-full bg-[#11151B] text-[#FAF9F6] border border-[#2B3441]">
-                {product.badge}
-              </span>
+
+            {product.imageUrl && !imageError ? (
+              <div className="relative w-full h-full">
+                <Image
+                  src={product.imageUrl}
+                  alt={product.name}
+                  fill
+                  priority
+                  sizes="(max-width: 768px) 100vw, 400px"
+                  className="object-contain p-2"
+                  onError={() => setImageError(true)}
+                />
+              </div>
+            ) : (
+              <GarmentVisual
+                shape={product.shape}
+                colorHex={product.colorHex}
+                className="w-full h-full max-h-[240px] drop-shadow-2xl"
+              />
             )}
+
+            <div className="absolute top-3 left-3 flex flex-col gap-1.5 items-start">
+              {product.badge && (
+                <span className="text-[10px] font-black uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-[#11151B] text-[#FAF9F6] border border-[#2B3441]">
+                  {product.badge}
+                </span>
+              )}
+              {product.isRealPhoto && !imageError && (
+                <span className="text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md bg-[#722D4A] text-[#FAF9F6] border border-[#E8A9C3]/30 flex items-center gap-1">
+                  <Camera className="w-2.5 h-2.5 text-[#D9FF3F]" />
+                  <span>Ảnh thật từ nhà phân phối</span>
+                </span>
+              )}
+            </div>
           </div>
 
           {/* Right Column: Detailed Info */}
@@ -64,8 +97,9 @@ export const ProductModal: React.FC<ProductModalProps> = ({
             <div>
               {/* Category & Store Badges */}
               <div className="flex items-center gap-2 mb-2">
-                <span className="px-2.5 py-0.5 rounded-full bg-[#722D4A] text-[#FAF9F6] text-[10px] font-bold uppercase tracking-wider">
-                  {product.store}
+                <span className="px-2.5 py-0.5 rounded-full bg-[#722D4A] text-[#FAF9F6] text-[10px] font-bold uppercase tracking-wider flex items-center gap-1">
+                  <span>{product.store}</span>
+                  <CheckCircle2 className="w-3 h-3 text-[#D9FF3F]" />
                 </span>
                 <span className="px-2.5 py-0.5 rounded-full bg-[#11151B] text-[#D9FF3F] text-[10px] font-bold uppercase tracking-wider border border-[#2B3441]">
                   {product.category} · {product.sport}
@@ -124,7 +158,7 @@ export const ProductModal: React.FC<ProductModalProps> = ({
                 <div className="p-3 rounded-xl bg-[#11151B] border border-[#2B3441] mb-4 text-xs">
                   <div className="font-bold text-[#FAF9F6] flex items-center gap-1.5 mb-1">
                     <MapPin className="w-3.5 h-3.5 text-[#D9FF3F]" />
-                    <span>Có mặt tại: {store.name}</span>
+                    <span>Cửa hàng phân phối: {store.name}</span>
                   </div>
                   <div className="text-[11px] text-[#FAF9F6]/60 pl-5">
                     {store.address}

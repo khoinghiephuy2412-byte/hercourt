@@ -1,16 +1,15 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
-  cacheComponents: true,
-  partialPrefetching: true,
-  turbopack: {
-    rules: {
-      "*.css": {
-        loaders: ["@tailwindcss/turbopack"],
-        as: "*.css",
-      },
-    },
+  images: {
+    remotePatterns: [
+      { protocol: "https", hostname: "cdn.shopvnb.com" },
+      { protocol: "https", hostname: "shopvnb.com" },
+      { protocol: "https", hostname: "beyono.vn" },
+      { protocol: "https", hostname: "www.beyono.vn" },
+      { protocol: "https", hostname: "cdn.hstatic.net" },
+      { protocol: "https", hostname: "hstatic.net" },
+    ],
   },
 };
 

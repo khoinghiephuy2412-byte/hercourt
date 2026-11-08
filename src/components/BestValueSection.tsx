@@ -1,9 +1,10 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
+import Image from "next/image";
 import { Product, PRODUCTS, formatVND } from "@/lib/data";
 import { GarmentVisual } from "./GarmentVisual";
-import { Tag, ExternalLink, Sparkles, ArrowRight } from "lucide-react";
+import { Tag, ExternalLink, Sparkles, ArrowRight, Camera } from "lucide-react";
 
 interface BestValueSectionProps {
   onQuickView: (product: Product) => void;
@@ -57,10 +58,26 @@ export const BestValueSection: React.FC<BestValueSectionProps> = ({
                 </div>
 
                 <div
-                  className="h-36 w-full rounded-xl bg-[#11151B] border border-[#2B3441] flex items-center justify-center p-3 mb-3 cursor-pointer group-hover:scale-105 transition-transform"
+                  className="relative aspect-square w-full rounded-xl bg-[#11151B] border border-[#2B3441] flex items-center justify-center p-3 mb-3 cursor-pointer group-hover:scale-105 transition-transform overflow-hidden"
                   onClick={() => onQuickView(p)}
                 >
-                  <GarmentVisual shape={p.shape} colorHex={p.colorHex} />
+                  {p.imageUrl ? (
+                    <Image
+                      src={p.imageUrl}
+                      alt={p.name}
+                      fill
+                      sizes="(max-width: 640px) 100vw, 250px"
+                      className="object-contain p-2"
+                    />
+                  ) : (
+                    <GarmentVisual shape={p.shape} colorHex={p.colorHex} />
+                  )}
+                  {p.isRealPhoto && (
+                    <span className="absolute bottom-2 right-2 text-[8px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded bg-[#11151B]/90 text-[#FAF9F6] border border-[#2B3441] flex items-center gap-0.5">
+                      <Camera className="w-2 h-2 text-[#D9FF3F]" />
+                      <span>Ảnh thật</span>
+                    </span>
+                  )}
                 </div>
 
                 <h4
