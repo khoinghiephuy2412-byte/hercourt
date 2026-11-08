@@ -3,7 +3,7 @@ import assert from "node:assert";
 async function runSmokeTests() {
   console.log("🚀 Starting HERCOURT Smoke Tests...");
 
-  const BASE_URL = "https://nimble-bromine-r13gw7l.tmp.now";
+  const BASE_URL = process.env.TEST_URL || "http://localhost:3000";
 
   // Test 1: Root HTML endpoint
   console.log("1. Testing Root URL...");
@@ -40,7 +40,7 @@ async function runSmokeTests() {
   console.log("3. Testing Data Integrity...");
   // Check that all 22 products are referenced in the rendered page
   const expectedProducts = [
-    "Váy thể thao Noon VSP09",
+    "Váy thể thao Moon VSP09",
     "Váy thể thao Nova SP01",
     "Váy thể thao VCL04",
     "Váy thể thao VCL03",
@@ -58,7 +58,7 @@ async function runSmokeTests() {
     "Bộ Kamito Smash nữ trắng cam",
     "Bộ Kamito Smash nữ xanh bích",
     "Áo Taro TR024-A18 nữ xanh lục",
-    "Áo Kamito Flash Light V2 nữ đỏ",
+    "Áo Kamito Halley KMAP220610F nữ đỏ",
     "Áo Victec AVT13 nữ trắng",
     "Áo Kamito Halley nữ trắng cam",
     "Quần short nữ Breeza 2 lớp",
