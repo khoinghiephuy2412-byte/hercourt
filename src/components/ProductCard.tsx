@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import Image from "next/image";
 import { Product, formatVND } from "@/lib/data";
 import { GarmentVisual } from "./GarmentVisual";
-import { Heart, ExternalLink, Eye, Camera, CheckCircle2 } from "lucide-react";
+import { Heart, ExternalLink, Eye, Camera, CheckCircle2, ShieldCheck, Trophy } from "lucide-react";
 
 interface ProductCardProps {
   product: Product;
@@ -35,13 +35,17 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           style={{ backgroundColor: product.colorHex }}
         />
 
-        {/* Real photo badge in top-left */}
-        <div className="absolute top-3 left-3 z-10 flex flex-col gap-1.5 items-start">
+        {/* Badges in top-left */}
+        <div className="absolute top-3 left-3 z-10 flex flex-col gap-1 items-start">
           {product.badge && (
             <span className="text-[10px] font-black uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-[#11151B]/90 text-[#FAF9F6] border border-[#2B3441] shadow-sm">
               {product.badge}
             </span>
           )}
+          <span className="text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md bg-[#11151B]/90 text-[#D9FF3F] border border-[#2B3441] flex items-center gap-1 shadow-sm">
+            <Trophy className="w-2.5 h-2.5" />
+            <span>{product.sport}</span>
+          </span>
           {product.isRealPhoto && !imageError && (
             <span className="text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md bg-[#722D4A]/90 text-[#FAF9F6] border border-[#E8A9C3]/30 flex items-center gap-1 shadow-sm">
               <Camera className="w-2.5 h-2.5 text-[#D9FF3F]" />
@@ -146,8 +150,21 @@ export const ProductCard: React.FC<ProductCardProps> = ({
             )}
           </div>
           
-          <div className="flex items-center justify-between text-[10px] text-[#FAF9F6]/45 mt-0.5">
-            <span>Giá gốc tại nguồn</span>
+          {/* Verification Scope Tag */}
+          <div className="flex items-center justify-between text-[10px] text-[#FAF9F6]/50 mt-1">
+            <span className="flex items-center gap-1">
+              {product.verificationScope === "CONFIRMED_LOCAL_BRANCH" ? (
+                <span className="text-emerald-400 font-semibold flex items-center gap-1">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+                  Sẵn tại Biên Hòa (Scope A)
+                </span>
+              ) : (
+                <span className="text-rose-300 font-medium flex items-center gap-1">
+                  <span className="w-1.5 h-1.5 rounded-full bg-rose-400" />
+                  Shop Biên Hòa (Scope B)
+                </span>
+              )}
+            </span>
             <span className="font-mono">Xác minh {product.verifiedDate}</span>
           </div>
         </div>

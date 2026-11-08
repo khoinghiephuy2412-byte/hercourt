@@ -2,14 +2,25 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
-import { Heart, MapPin, Search, Menu, X, Sparkles } from "lucide-react";
+import {
+  Search,
+  Heart,
+  Menu,
+  X,
+  MapPin,
+  Sparkles,
+  ShieldCheck,
+  Database,
+  RefreshCw,
+} from "lucide-react";
 
 interface NavigationProps {
   wishlistCount: number;
   onOpenWishlist: () => void;
   searchQuery: string;
-  onSearchChange: (q: string) => void;
-  onSelectCategory: (cat: string) => void;
+  onSearchChange: (query: string) => void;
+  onSelectCategory: (category: string) => void;
+  onOpenAdmin?: () => void;
 }
 
 export const Navigation: React.FC<NavigationProps> = ({
@@ -18,23 +29,24 @@ export const Navigation: React.FC<NavigationProps> = ({
   searchQuery,
   onSearchChange,
   onSelectCategory,
+  onOpenAdmin,
 }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [showSearchInput, setShowSearchInput] = useState(false);
 
-  const handleNavClick = (catId?: string) => {
-    if (catId) onSelectCategory(catId);
+  const handleNavClick = (cat: string) => {
+    onSelectCategory(cat);
     setMobileMenuOpen(false);
   };
 
   return (
-    <header className="sticky top-0 z-50 w-full transition-all duration-300">
-      {/* Top micro-bar: Editorial announcement */}
-      <div className="bg-[#181D25] border-b border-[#2B3441] text-[#FAF9F6]/80 text-xs py-1.5 px-4 font-medium">
+    <header className="sticky top-0 z-40 w-full">
+      {/* Top Editorial Utility Bar */}
+      <div className="bg-[#11151B] border-b border-[#2B3441] px-4 lg:px-8 py-1.5 text-xs">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 text-[#FAF9F6]/75 font-mono text-[11px] tracking-wider">
             <span className="inline-block w-2 h-2 rounded-full bg-[#D9FF3F] animate-pulse" />
-            <span className="text-[11px] tracking-widest uppercase text-[#FAF9F6]/90 font-semibold">
+            <span className="font-semibold text-[#FAF9F6]">
               BIÊN HÒA SPORTS FASHION DISCOVERY PLATFORM
             </span>
           </div>
@@ -76,7 +88,7 @@ export const Navigation: React.FC<NavigationProps> = ({
               onClick={() => handleNavClick("all")}
               className="text-[#FAF9F6]/90 hover:text-[#D9FF3F] transition-colors"
             >
-              Bộ Sưu Tập
+              Bộ Sưu Tập (36)
             </a>
             <a
               href="#products"
@@ -104,7 +116,7 @@ export const Navigation: React.FC<NavigationProps> = ({
               className="text-[#FAF9F6]/75 hover:text-[#D9FF3F] transition-colors flex items-center gap-1"
             >
               <MapPin className="w-3.5 h-3.5 text-[#D9FF3F]" />
-              8 Shop Biên Hòa
+              10 Shop Biên Hòa
             </a>
             <a
               href="#editorial"
@@ -167,6 +179,19 @@ export const Navigation: React.FC<NavigationProps> = ({
               )}
             </button>
 
+            {/* Admin / Data Pipeline Button */}
+            {onOpenAdmin && (
+              <button
+                onClick={onOpenAdmin}
+                className="p-2.5 rounded-full bg-[#181D25] hover:bg-[#2B3441] border border-[#722D4A]/50 text-[#FAF9F6] hover:text-[#D9FF3F] transition-all flex items-center gap-1.5"
+                title="Quản trị & Đồng bộ dữ liệu"
+                aria-label="Đồng bộ dữ liệu"
+              >
+                <Database className="w-4 h-4 text-[#D9FF3F]" />
+                <span className="hidden md:inline text-xs font-bold">Đồng bộ</span>
+              </button>
+            )}
+
             {/* CTA Shop Direct button */}
             <a
               href="#stores"
@@ -196,7 +221,7 @@ export const Navigation: React.FC<NavigationProps> = ({
               onClick={() => handleNavClick("all")}
               className="text-[#FAF9F6] hover:text-[#D9FF3F] py-2 border-b border-[#2B3441]/50"
             >
-              Tất Cả Sản Phẩm (22 Mẫu)
+              Tất Cả Sản Phẩm (36 Mẫu)
             </a>
             <a
               href="#products"
@@ -224,17 +249,29 @@ export const Navigation: React.FC<NavigationProps> = ({
               onClick={() => setMobileMenuOpen(false)}
               className="text-[#D9FF3F] py-2 border-b border-[#2B3441]/50 flex items-center justify-between"
             >
-              <span>8 Cửa Hàng Thể Thao Biên Hòa</span>
+              <span>10 Cửa Hàng Thể Thao Biên Hòa</span>
               <MapPin className="w-4 h-4" />
             </a>
             <a
               href="#editorial"
               onClick={() => setMobileMenuOpen(false)}
-              className="text-[#E8A9C3] py-2 flex items-center justify-between"
+              className="text-[#E8A9C3] py-2 border-b border-[#2B3441]/50 flex items-center justify-between"
             >
               <span>Lookbook Lia — The HERCOURT Athlete</span>
               <Sparkles className="w-4 h-4 text-[#D9FF3F]" />
             </a>
+            {onOpenAdmin && (
+              <button
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  onOpenAdmin();
+                }}
+                className="text-[#D9FF3F] py-2 flex items-center justify-between text-left"
+              >
+                <span>Hệ Thống Đồng Bộ & Quản Trị Pipeline</span>
+                <Database className="w-4 h-4 text-[#D9FF3F]" />
+              </button>
+            )}
           </div>
         </div>
       )}

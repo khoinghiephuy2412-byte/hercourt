@@ -1,9 +1,9 @@
 "use client";
 
 import React, { useState, useMemo } from "react";
-import { Product } from "@/lib/data";
+import { Product, SPORTS, STORES, normalizeVietnameseText } from "@/lib/data";
 import { ProductCard } from "./ProductCard";
-import { Search, SlidersHorizontal, RotateCcw } from "lucide-react";
+import { Search, SlidersHorizontal, RotateCcw, ShieldCheck, Trophy, Sparkles } from "lucide-react";
 
 interface ProductGridProps {
   products: Product[];
@@ -26,20 +26,33 @@ export const ProductGrid: React.FC<ProductGridProps> = ({
   onToggleWishlist,
   onQuickView,
 }) => {
+  const [selectedSport, setSelectedSport] = useState<string>("all");
+  const [selectedScope, setSelectedScope] = useState<string>("all");
   const [selectedStore, setSelectedStore] = useState<string>("all");
   const [sortBy, setSortBy] = useState<"featured" | "low" | "high" | "under200">("featured");
 
+  // Dynamic counts for category tabs
+  const categoryCounts = useMemo(() => {
+    const counts: Record<string, number> = { all: products.length, Váy: 0, Áo: 0, "Bộ đồ": 0, Quần: 0 };
+    products.forEach((p) => {
+      if (counts[p.category] !== undefined) counts[p.category]++;
+    });
+    return counts;
+  }, [products]);
+
   const categories = [
-    { id: "all", label: "Tất cả" },
-    { id: "Váy", label: "Váy (6)" },
-    { id: "Áo", label: "Áo (11)" },
-    { id: "Bộ đồ", label: "Bộ đồ (4)" },
-    { id: "Quần", label: "Quần (1)" },
+    { id: "all", label: `Tất cả (${products.length})` },
+    { id: "Váy", label: `Váy (${categoryCounts["Váy"] || 0})` },
+    { id: "Áo", label: `Áo (${categoryCounts["Áo"] || 0})` },
+    { id: "Bộ đồ", label: `Bộ đồ (${categoryCounts["Bộ đồ"] || 0})` },
+    { id: "Quần", label: `Quần (${categoryCounts["Quần"] || 0})` },
     { id: "favorites", label: `Yêu thích (${wishlist.length})` },
   ];
 
-  // Filtering & Sorting Logic
+  // Filtering & Sorting Logic with Accent-insensitive Vietnamese search
   const filteredProducts = useMemo(() => {
+    const normalizedQuery = normalizeVietnameseText(searchQuery.trim());
+
     return products
       .filter((p) => {
         // Category filter
@@ -53,19 +66,32 @@ export const ProductGrid: React.FC<ProductGridProps> = ({
           return false;
         }
 
-        // Store filter
-        if (selectedStore !== "all" && p.store !== selectedStore) {
+        // Sport filter
+        if (selectedSport !== "all" && p.sport !== selectedSport) {
           return false;
         }
 
-        // Search query filter (matches name, store, category, tags)
-        if (searchQuery.trim()) {
-          const q = searchQuery.toLowerCase().trim();
-          const matchName = p.name.toLowerCase().includes(q);
-          const matchStore = p.store.toLowerCase().includes(q);
-          const matchCat = p.category.toLowerCase().includes(q);
-          const matchTags = p.tags.some((t) => t.toLowerCase().includes(q));
-          if (!matchName && !matchStore && !matchCat && !matchTags) return false;
+        // Verification Scope filter
+        if (selectedScope !== "all" && p.verificationScope !== selectedScope) {
+          return false;
+        }
+
+        // Store filter
+        if (selectedStore !== "all" && p.store !== selectedStore && p.storeId !== selectedStore) {
+          return false;
+        }
+
+        // Accent-insensitive search query filter
+        if (normalizedQuery) {
+          const matchName = normalizeVietnameseText(p.name).includes(normalizedQuery);
+          const matchBrand = p.brand ? normalizeVietnameseText(p.brand).includes(normalizedQuery) : false;
+          const matchStore = normalizeVietnameseText(p.store).includes(normalizedQuery);
+          const matchCat = normalizeVietnameseText(p.category).includes(normalizedQuery);
+          const matchSport = normalizeVietnameseText(p.sport).includes(normalizedQuery);
+          const matchTags = p.tags.some((t) => normalizeVietnameseText(t).includes(normalizedQuery));
+          if (!matchName && !matchBrand && !matchStore && !matchCat && !matchSport && !matchTags) {
+            return false;
+          }
         }
 
         // Under 200k filter
@@ -80,14 +106,33 @@ export const ProductGrid: React.FC<ProductGridProps> = ({
         if (sortBy === "high") return b.price - a.price;
         return 0; // default featured order
       });
-  }, [products, selectedCategory, selectedStore, searchQuery, sortBy, wishlist]);
+  }, [
+    products,
+    selectedCategory,
+    selectedSport,
+    selectedScope,
+    selectedStore,
+    searchQuery,
+    sortBy,
+    wishlist,
+  ]);
 
   const handleResetFilters = () => {
     onSelectCategory("all");
+    setSelectedSport("all");
+    setSelectedScope("all");
     setSelectedStore("all");
     setSortBy("featured");
     onSearchChange("");
   };
+
+  const hasActiveFilters =
+    selectedCategory !== "all" ||
+    selectedSport !== "all" ||
+    selectedScope !== "all" ||
+    selectedStore !== "all" ||
+    sortBy !== "featured" ||
+    searchQuery.trim().length > 0;
 
   return (
     <section id="products" className="py-16 sm:py-24 bg-[#11151B] scroll-mt-20">
@@ -98,22 +143,22 @@ export const ProductGrid: React.FC<ProductGridProps> = ({
           <div>
             <div className="text-[11px] font-black uppercase tracking-[0.25em] text-[#D9FF3F] mb-2 flex items-center gap-2">
               <span className="w-1.5 h-1.5 rounded-full bg-[#D9FF3F]" />
-              BỘ SƯU TẬP TUYỂN CHỌN
+              BỘ SƯU TẬP TUYỂN CHỌN XÁC THỰC
             </div>
             <h2 className="text-3xl sm:text-5xl font-black uppercase tracking-tight text-[#FAF9F6] font-display">
               DISCOVER <span className="text-[#E8A9C3]">PRODUCTS</span>
             </h2>
           </div>
           <div className="text-xs sm:text-sm text-[#FAF9F6]/60 font-medium">
-            Hiển thị <span className="text-[#D9FF3F] font-bold">{filteredProducts.length}</span> / {products.length} mẫu đã chọn lọc tại Biên Hòa
+            Hiển thị <span className="text-[#D9FF3F] font-bold">{filteredProducts.length}</span> / {products.length} mẫu tại các cửa hàng Biên Hòa
           </div>
         </div>
 
         {/* Filter Controls Toolbar */}
-        <div className="bg-[#181D25] border border-[#2B3441] rounded-2xl p-4 sm:p-5 mb-10 shadow-lg">
+        <div className="bg-[#181D25] border border-[#2B3441] rounded-2xl p-4 sm:p-5 mb-10 shadow-lg space-y-4">
           
-          {/* Top row: Category Chips */}
-          <div className="flex items-center gap-2 overflow-x-auto pb-3 sm:pb-4 border-b border-[#2B3441]/60 no-scrollbar">
+          {/* Row 1: Category Chips */}
+          <div className="flex items-center gap-2 overflow-x-auto pb-2 no-scrollbar">
             {categories.map((c) => {
               const active =
                 selectedCategory === c.id ||
@@ -135,58 +180,151 @@ export const ProductGrid: React.FC<ProductGridProps> = ({
             })}
           </div>
 
-          {/* Bottom row: Search input & Store Select & Sort Dropdowns */}
-          <div className="grid grid-cols-1 sm:grid-cols-12 gap-3 pt-3 sm:pt-4 items-center">
+          {/* Row 2: Sport Filter Chips (Pickleball, Badminton, Tennis, etc.) */}
+          <div className="flex items-center gap-2 overflow-x-auto pb-2 border-t border-[#2B3441]/50 pt-3 no-scrollbar">
+            <span className="text-[10px] font-mono uppercase tracking-widest text-[#FAF9F6]/40 flex items-center gap-1 mr-1 whitespace-nowrap">
+              <Trophy className="w-3 h-3 text-[#D9FF3F]" />
+              Bộ môn:
+            </span>
+            <button
+              onClick={() => setSelectedSport("all")}
+              className={`px-3 py-1.5 rounded-lg text-xs font-bold whitespace-nowrap transition-all ${
+                selectedSport === "all"
+                  ? "bg-[#722D4A] text-[#FAF9F6] border border-[#E8A9C3]/40 shadow-sm"
+                  : "bg-[#11151B] text-[#FAF9F6]/70 hover:text-white border border-[#2B3441]"
+              }`}
+            >
+              Tất cả bộ môn
+            </button>
+            {SPORTS.map((sport) => {
+              const active = selectedSport === sport.name;
+              const count = products.filter((p) => p.sport === sport.name).length;
+              return (
+                <button
+                  key={sport.id}
+                  onClick={() => setSelectedSport(sport.name)}
+                  className={`px-3 py-1.5 rounded-lg text-xs font-bold whitespace-nowrap transition-all flex items-center gap-1.5 ${
+                    active
+                      ? "bg-[#722D4A] text-[#FAF9F6] border border-[#E8A9C3]/40 shadow-sm"
+                      : "bg-[#11151B] text-[#FAF9F6]/70 hover:text-white border border-[#2B3441]"
+                  }`}
+                >
+                  <span>{sport.name}</span>
+                  <span className="text-[10px] font-mono opacity-60">({count})</span>
+                </button>
+              );
+            })}
+          </div>
+
+          {/* Row 3: Verification Scope Pills */}
+          <div className="flex items-center gap-2 overflow-x-auto pb-2 border-t border-[#2B3441]/50 pt-3 no-scrollbar">
+            <span className="text-[10px] font-mono uppercase tracking-widest text-[#FAF9F6]/40 flex items-center gap-1 mr-1 whitespace-nowrap">
+              <ShieldCheck className="w-3 h-3 text-[#D9FF3F]" />
+              Xác thực:
+            </span>
+            <button
+              onClick={() => setSelectedScope("all")}
+              className={`px-3 py-1 rounded-md text-[11px] font-bold whitespace-nowrap transition-all ${
+                selectedScope === "all"
+                  ? "bg-[#D9FF3F] text-[#11151B]"
+                  : "bg-[#11151B] text-[#FAF9F6]/70 hover:text-white border border-[#2B3441]"
+              }`}
+            >
+              Tất cả cấp độ ({products.length})
+            </button>
+            <button
+              onClick={() => setSelectedScope("CONFIRMED_LOCAL_BRANCH")}
+              className={`px-3 py-1 rounded-md text-[11px] font-bold whitespace-nowrap transition-all ${
+                selectedScope === "CONFIRMED_LOCAL_BRANCH"
+                  ? "bg-[#D9FF3F] text-[#11151B]"
+                  : "bg-[#11151B] text-emerald-400 hover:text-emerald-300 border border-emerald-900/60"
+              }`}
+            >
+              Scope A: Sẵn tại chi nhánh Biên Hòa ({products.filter((p) => p.verificationScope === "CONFIRMED_LOCAL_BRANCH").length})
+            </button>
+            <button
+              onClick={() => setSelectedScope("CONFIRMED_LOCAL_MERCHANT")}
+              className={`px-3 py-1 rounded-md text-[11px] font-bold whitespace-nowrap transition-all ${
+                selectedScope === "CONFIRMED_LOCAL_MERCHANT"
+                  ? "bg-[#D9FF3F] text-[#11151B]"
+                  : "bg-[#11151B] text-rose-300 hover:text-rose-200 border border-rose-900/60"
+              }`}
+            >
+              Scope B: Cửa hàng Biên Hòa ({products.filter((p) => p.verificationScope === "CONFIRMED_LOCAL_MERCHANT").length})
+            </button>
+          </div>
+
+          {/* Row 4: Search input & Store Select & Sort Dropdowns */}
+          <div className="grid grid-cols-1 sm:grid-cols-12 gap-3 pt-3 border-t border-[#2B3441]/50 items-center">
             
-            {/* Search Input Box */}
+            {/* Accent-insensitive Search Input */}
             <div className="sm:col-span-5 relative">
-              <Search className="w-4 h-4 text-[#FAF9F6]/40 absolute left-3.5 top-1/2 -translate-y-1/2" />
+              <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-[#FAF9F6]/40 pointer-events-none" />
               <input
                 type="text"
                 value={searchQuery}
                 onChange={(e) => onSearchChange(e.target.value)}
-                placeholder="Tìm tên mẫu, thương hiệu, màu sắc..."
-                className="w-full pl-10 pr-4 py-2 rounded-xl bg-[#11151B] border border-[#2B3441] text-xs text-[#FAF9F6] focus:outline-none focus:border-[#E8A9C3] placeholder-[#FAF9F6]/40"
+                placeholder="Tìm tên áo, chân váy, polo, pickleball, thương hiệu..."
+                className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-[#11151B] border border-[#2B3441] text-xs text-[#FAF9F6] placeholder-[#FAF9F6]/40 focus:outline-none focus:border-[#D9FF3F] transition-colors"
               />
+              {searchQuery && (
+                <button
+                  onClick={() => onSearchChange("")}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] text-[#FAF9F6]/50 hover:text-white"
+                >
+                  Xóa
+                </button>
+              )}
             </div>
 
-            {/* Store Filter Select */}
-            <div className="sm:col-span-3">
+            {/* Store Select Dropdown */}
+            <div className="sm:col-span-4 relative">
               <select
                 value={selectedStore}
                 onChange={(e) => setSelectedStore(e.target.value)}
-                className="w-full py-2 px-3 rounded-xl bg-[#11151B] border border-[#2B3441] text-xs text-[#FAF9F6] focus:outline-none focus:border-[#E8A9C3] cursor-pointer"
+                className="w-full px-3.5 py-2.5 rounded-xl bg-[#11151B] border border-[#2B3441] text-xs text-[#FAF9F6] focus:outline-none focus:border-[#D9FF3F] appearance-none cursor-pointer"
               >
-                <option value="all">Tất cả cửa hàng (3 shop có hàng)</option>
-                <option value="BEYONO">BEYONO (15 mẫu)</option>
-                <option value="VNB CN2">VNB Sports CN2 (6 mẫu)</option>
-                <option value="Phượng Sport">Phượng Sport (1 mẫu)</option>
+                <option value="all">Tất cả 10 cửa hàng Biên Hòa</option>
+                {STORES.map((s) => (
+                  <option key={s.id} value={s.shortName}>
+                    {s.name} ({s.productCount} mẫu)
+                  </option>
+                ))}
               </select>
+              <div className="pointer-events-none absolute right-3.5 top-1/2 -translate-y-1/2 text-[#FAF9F6]/40 text-xs">
+                ▼
+              </div>
             </div>
 
-            {/* Sort Filter Select */}
-            <div className="sm:col-span-3">
-              <select
-                value={sortBy}
-                onChange={(e) => setSortBy(e.target.value as "featured" | "low" | "high" | "under200")}
-                className="w-full py-2 px-3 rounded-xl bg-[#11151B] border border-[#2B3441] text-xs text-[#FAF9F6] focus:outline-none focus:border-[#E8A9C3] cursor-pointer"
-              >
-                <option value="featured">Sắp xếp: Mặc định</option>
-                <option value="low">Giá: Thấp đến Cao</option>
-                <option value="high">Giá: Cao đến Thấp</option>
-                <option value="under200">Lọc: Dưới 200.000đ</option>
-              </select>
-            </div>
+            {/* Sort Dropdown */}
+            <div className="sm:col-span-3 relative flex gap-2">
+              <div className="relative w-full">
+                <select
+                  value={sortBy}
+                  onChange={(e) => setSortBy(e.target.value as any)}
+                  className="w-full px-3 py-2.5 rounded-xl bg-[#11151B] border border-[#2B3441] text-xs text-[#FAF9F6] focus:outline-none focus:border-[#D9FF3F] appearance-none cursor-pointer"
+                >
+                  <option value="featured">Nổi bật nhất</option>
+                  <option value="low">Giá: Thấp đến cao</option>
+                  <option value="high">Giá: Cao đến thấp</option>
+                  <option value="under200">Dưới 200.000đ</option>
+                </select>
+                <div className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-[#FAF9F6]/40 text-xs">
+                  ▼
+                </div>
+              </div>
 
-            {/* Reset Button */}
-            <div className="sm:col-span-1 flex justify-end">
-              <button
-                onClick={handleResetFilters}
-                className="p-2.5 rounded-xl bg-[#11151B] hover:bg-[#2B3441] border border-[#2B3441] text-[#FAF9F6]/70 hover:text-white transition-colors"
-                title="Đặt lại bộ lọc"
-              >
-                <RotateCcw className="w-3.5 h-3.5" />
-              </button>
+              {/* Reset filter button */}
+              {hasActiveFilters && (
+                <button
+                  onClick={handleResetFilters}
+                  className="p-2.5 rounded-xl bg-[#11151B] hover:bg-[#2B3441] border border-[#2B3441] text-[#FAF9F6]/60 hover:text-white transition-colors"
+                  title="Đặt lại tất cả bộ lọc"
+                  aria-label="Đặt lại bộ lọc"
+                >
+                  <RotateCcw className="w-4 h-4" />
+                </button>
+              )}
             </div>
 
           </div>
@@ -195,32 +333,33 @@ export const ProductGrid: React.FC<ProductGridProps> = ({
 
         {/* Product Cards Grid */}
         {filteredProducts.length > 0 ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            {filteredProducts.map((product) => (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            {filteredProducts.map((p) => (
               <ProductCard
-                key={product.id}
-                product={product}
-                isFavorite={wishlist.includes(product.id)}
+                key={p.id}
+                product={p}
+                isFavorite={wishlist.includes(p.id)}
                 onToggleFavorite={onToggleWishlist}
                 onQuickView={onQuickView}
               />
             ))}
           </div>
         ) : (
-          /* Empty Search / Filter state */
-          <div className="py-20 text-center bg-[#181D25] border border-[#2B3441] rounded-2xl p-8 max-w-lg mx-auto">
-            <SlidersHorizontal className="w-10 h-10 text-[#FAF9F6]/30 mx-auto mb-4" />
-            <h3 className="text-lg font-black uppercase text-[#FAF9F6] mb-2">
-              Không tìm thấy mẫu phù hợp
+          <div className="bg-[#181D25] border border-[#2B3441] rounded-3xl p-12 text-center max-w-xl mx-auto my-8">
+            <div className="w-16 h-16 rounded-full bg-[#11151B] border border-[#2B3441] flex items-center justify-center mx-auto mb-4 text-[#E8A9C3]">
+              <SlidersHorizontal className="w-6 h-6" />
+            </div>
+            <h3 className="text-xl font-bold uppercase text-[#FAF9F6] mb-2">
+              Không tìm thấy sản phẩm phù hợp
             </h3>
             <p className="text-xs text-[#FAF9F6]/60 mb-6 leading-relaxed">
-              Hãy thử chọn danh mục khác, điều chỉnh khoảng giá hoặc xóa từ khóa tìm kiếm.
+              Không có sản phẩm nào thỏa mãn các tiêu chí lọc hiện tại. Thử chọn &ldquo;Tất cả bộ môn&rdquo;, xóa từ khóa tìm kiếm hoặc đổi cửa hàng.
             </p>
             <button
               onClick={handleResetFilters}
-              className="px-6 py-2.5 rounded-full bg-[#D9FF3F] text-[#11151B] text-xs font-black uppercase tracking-wider hover:bg-[#BBE02E] transition-colors"
+              className="px-6 py-2.5 rounded-full bg-[#D9FF3F] text-[#11151B] font-bold text-xs uppercase tracking-wider hover:bg-[#BBE02E] transition-colors"
             >
-              Xem Tất Cả 22 Mẫu
+              Đặt lại tất cả bộ lọc
             </button>
           </div>
         )}

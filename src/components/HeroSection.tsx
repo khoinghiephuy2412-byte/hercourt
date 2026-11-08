@@ -49,9 +49,8 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
             {/* Editorial Description */}
             <p className="text-sm sm:text-base text-[#FAF9F6]/70 leading-relaxed max-w-xl mb-8 font-normal">
               Nền tảng khám phá thời trang thể thao nữ chuyên sâu đầu tiên tại Biên Hòa.
-              Tuyển tập chân thực các thiết kế váy xòe, áo polo thi đấu, bộ đồ cầu lông và quần thể thao
-              từ <strong>BEYONO</strong>, <strong>VNB Sports</strong>, <strong>Phượng Sport</strong>.
-              Khám phá mẫu mã, so sánh mức giá và nhận chỉ đường mua sắm tức thì.
+              Tuyển tập chân thực 36 thiết kế trang phục thi đấu từ <strong>BEYONO</strong>, <strong>VNB Sports</strong>, <strong>Phượng Sport</strong>, <strong>XB Sports</strong>, <strong>Chiến Thắng Sport</strong>.
+              Khám phá mẫu mã, đối chiếu giá niêm yết tại quầy và nhận chỉ đường mua sắm tức thì.
             </p>
 
             {/* Action CTA Buttons */}
@@ -60,7 +59,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                 onClick={onExploreClick}
                 className="px-7 py-3.5 rounded-full bg-[#D9FF3F] text-[#11151B] font-black text-xs sm:text-sm uppercase tracking-wider hover:bg-[#BBE02E] transition-all transform hover:-translate-y-0.5 shadow-lg shadow-[#D9FF3F]/20 flex items-center gap-2 focus-ring"
               >
-                <span>Khám Phá 22 Mẫu Tuyển Chọn</span>
+                <span>Khám Phá 36 Mẫu Tuyển Chọn</span>
                 <ArrowUpRight className="w-4 h-4 stroke-[3]" />
               </button>
 
@@ -69,7 +68,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                 className="px-6 py-3.5 rounded-full bg-[#181D25] hover:bg-[#2B3441] border border-[#2B3441] text-[#FAF9F6] font-bold text-xs sm:text-sm uppercase tracking-wider transition-all flex items-center gap-2 focus-ring"
               >
                 <MapPin className="w-4 h-4 text-[#E8A9C3]" />
-                <span>Xem 8 Cửa Hàng Biên Hòa</span>
+                <span>Xem 10 Cửa Hàng Biên Hòa</span>
               </button>
             </div>
 
@@ -77,7 +76,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
             <div className="grid grid-cols-3 gap-4 pt-6 border-t border-[#2B3441]/80 text-left">
               <div>
                 <div className="text-2xl font-black text-[#FAF9F6] flex items-center">
-                  22<span className="text-[#D9FF3F]">+</span>
+                  36<span className="text-[#D9FF3F]">+</span>
                 </div>
                 <div className="text-[11px] uppercase tracking-wider text-[#FAF9F6]/60 font-semibold mt-0.5">
                   Mẫu chọn lọc
@@ -86,7 +85,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
 
               <div>
                 <div className="text-2xl font-black text-[#FAF9F6] flex items-center">
-                  08<span className="text-[#E8A9C3]">·</span>
+                  10<span className="text-[#E8A9C3]">·</span>
                 </div>
                 <div className="text-[11px] uppercase tracking-wider text-[#FAF9F6]/60 font-semibold mt-0.5">
                   Cửa hàng Biên Hòa

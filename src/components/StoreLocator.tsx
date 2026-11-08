@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { STORES } from "@/lib/data";
-import { MapPin, ExternalLink, Navigation, Phone, Clock } from "lucide-react";
+import { MapPin, ExternalLink, Navigation, Phone, Clock, ShieldCheck, Trophy } from "lucide-react";
 
 export const StoreLocator: React.FC = () => {
   const [activeFilter, setActiveFilter] = useState<string>("all");
@@ -10,6 +10,8 @@ export const StoreLocator: React.FC = () => {
   const filteredStores = STORES.filter((store) => {
     if (activeFilter === "verified") return store.verified;
     if (activeFilter === "products") return store.productCount > 0;
+    if (activeFilter === "pickleball") return store.specialties.some((s) => s.toLowerCase().includes("pickleball"));
+    if (activeFilter === "badminton") return store.specialties.some((s) => s.toLowerCase().includes("cầu lông"));
     return true;
   });
 
@@ -29,7 +31,7 @@ export const StoreLocator: React.FC = () => {
             </h2>
           </div>
           <p className="text-sm text-[#FAF9F6]/65 max-w-md">
-            Khám phá 8 địa chỉ cửa hàng thể thao thực tế tại TP. Biên Hòa, Đồng Nai. Mở bản đồ Google Maps và ghé thử trang phục trực tiếp.
+            Mạng lưới {STORES.length} cửa hàng thể thao thực tế tại TP. Biên Hòa, Đồng Nai. Mở bản đồ Google Maps và ghé thử trang phục trực tiếp tại quầy.
           </p>
         </div>
 
@@ -43,7 +45,7 @@ export const StoreLocator: React.FC = () => {
                 : "bg-[#181D25] text-[#FAF9F6]/70 border border-[#2B3441] hover:text-white"
             }`}
           >
-            Tất Cả 8 Cửa Hàng
+            Tất Cả {STORES.length} Cửa Hàng
           </button>
           <button
             onClick={() => setActiveFilter("products")}
@@ -53,22 +55,32 @@ export const StoreLocator: React.FC = () => {
                 : "bg-[#181D25] text-[#FAF9F6]/70 border border-[#2B3441] hover:text-white"
             }`}
           >
-            Shop Có Mẫu Trên Web (3)
+            Có Sản Phẩm Khám Phá ({STORES.filter((s) => s.productCount > 0).length})
           </button>
           <button
-            onClick={() => setActiveFilter("verified")}
+            onClick={() => setActiveFilter("pickleball")}
             className={`px-4 py-2 rounded-full text-xs font-bold uppercase tracking-wider whitespace-nowrap transition-colors ${
-              activeFilter === "verified"
+              activeFilter === "pickleball"
                 ? "bg-[#D9FF3F] text-[#11151B]"
                 : "bg-[#181D25] text-[#FAF9F6]/70 border border-[#2B3441] hover:text-white"
             }`}
           >
-            Đã Xác Minh Địa Chỉ
+            Pickleball & Tennis
+          </button>
+          <button
+            onClick={() => setActiveFilter("badminton")}
+            className={`px-4 py-2 rounded-full text-xs font-bold uppercase tracking-wider whitespace-nowrap transition-colors ${
+              activeFilter === "badminton"
+                ? "bg-[#D9FF3F] text-[#11151B]"
+                : "bg-[#181D25] text-[#FAF9F6]/70 border border-[#2B3441] hover:text-white"
+            }`}
+          >
+            Chuyên Cầu Lông
           </button>
         </div>
 
         {/* Store Cards Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {filteredStores.map((store, index) => (
             <article
               key={store.id}
@@ -78,7 +90,7 @@ export const StoreLocator: React.FC = () => {
                 {/* Number & Badge */}
                 <div className="flex items-center justify-between mb-3">
                   <span className="text-2xl font-black font-mono text-[#FAF9F6]/20 group-hover:text-[#D9FF3F] transition-colors">
-                    0{index + 1}
+                    {index + 1 < 10 ? `0${index + 1}` : index + 1}
                   </span>
                   <span
                     className={`text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full ${
@@ -145,38 +157,34 @@ export const StoreLocator: React.FC = () => {
                   href={store.mapsUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="py-2 px-3 rounded-xl bg-[#722D4A] hover:bg-[#8E3B5E] text-[#FAF9F6] text-[11px] font-bold uppercase tracking-wider text-center transition-colors flex items-center justify-center gap-1"
+                  className="py-2 px-3 rounded-xl bg-[#722D4A]/50 hover:bg-[#722D4A] border border-[#E8A9C3]/30 text-[#FAF9F6] text-[11px] font-bold uppercase tracking-wider text-center transition-colors flex items-center justify-center gap-1"
                 >
-                  <Navigation className="w-3 h-3" />
                   <span>Chỉ đường</span>
+                  <Navigation className="w-3 h-3 text-[#D9FF3F]" />
                 </a>
               </div>
-
             </article>
           ))}
         </div>
 
-        {/* Local Support Banner */}
-        <div className="mt-12 p-6 rounded-2xl bg-[#181D25] border border-[#2B3441] flex flex-col md:flex-row items-center justify-between gap-6">
-          <div className="flex items-center gap-4">
-            <div className="w-12 h-12 rounded-2xl bg-[#722D4A] flex items-center justify-center text-[#D9FF3F] shrink-0">
-              <MapPin className="w-6 h-6" />
+        {/* Local Verification Notice */}
+        <div className="mt-12 p-6 rounded-3xl bg-[#181D25] border border-[#2B3441] flex flex-col md:flex-row items-center justify-between gap-4">
+          <div className="flex items-center gap-3">
+            <div className="p-2.5 rounded-2xl bg-[#11151B] border border-[#D9FF3F]/30 text-[#D9FF3F]">
+              <ShieldCheck className="w-6 h-6" />
             </div>
             <div>
-              <h4 className="text-base font-black uppercase text-[#FAF9F6]">
-                Bạn là chủ shop thể thao nữ tại Biên Hòa?
-              </h4>
-              <p className="text-xs text-[#FAF9F6]/60 mt-0.5">
-                Cập nhật thông tin cửa hàng, thêm sản phẩm và xuất hiện miễn phí trên bản đồ HERCOURT Biên Hòa.
-              </p>
+              <div className="text-sm font-bold text-[#FAF9F6]">
+                Xác thực địa chỉ thực tế 100% tại TP. Biên Hòa, Đồng Nai
+              </div>
+              <div className="text-xs text-[#FAF9F6]/60">
+                Mỗi địa chỉ đều được đối chiếu giấy phép hoạt động, mặt tiền cửa hàng và tọa độ bản đồ Google Maps chính xác.
+              </div>
             </div>
           </div>
-          <a
-            href="mailto:contact@hercourt.vn?subject=Yêu%20cầu%20kết%20nối%20shop%20Biên%20Hòa"
-            className="px-6 py-2.5 rounded-full bg-[#11151B] hover:bg-[#2B3441] border border-[#2B3441] text-[#D9FF3F] text-xs font-black uppercase tracking-wider transition-colors shrink-0"
-          >
-            Liên Hệ Kết Nối Cửa Hàng
-          </a>
+          <div className="text-xs font-mono text-[#D9FF3F] bg-[#11151B] px-3.5 py-2 rounded-xl border border-[#2B3441]">
+            CẬP NHẬT: THÁNG 11/2026
+          </div>
         </div>
 
       </div>

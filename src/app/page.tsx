@@ -13,6 +13,7 @@ import { BestValueSection } from "@/components/BestValueSection";
 import { StoreLocator } from "@/components/StoreLocator";
 import { ProductModal } from "@/components/ProductModal";
 import { WishlistDrawer } from "@/components/WishlistDrawer";
+import { AdminSyncModal } from "@/components/AdminSyncModal";
 import { Footer } from "@/components/Footer";
 
 export default function HomePage() {
@@ -20,6 +21,7 @@ export default function HomePage() {
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [isWishlistOpen, setIsWishlistOpen] = useState<boolean>(false);
+  const [isAdminOpen, setIsAdminOpen] = useState<boolean>(false);
   const [quickViewProduct, setQuickViewProduct] = useState<Product | null>(null);
 
   const handleExploreClick = () => {
@@ -47,6 +49,7 @@ export default function HomePage() {
         searchQuery={searchQuery}
         onSearchChange={setSearchQuery}
         onSelectCategory={handleSelectCategory}
+        onOpenAdmin={() => setIsAdminOpen(true)}
       />
 
       {/* 2. Cinematic Hero Section with LIA */}
@@ -106,6 +109,13 @@ export default function HomePage() {
         onClose={() => setQuickViewProduct(null)}
         isFavorite={quickViewProduct ? isFavorite(quickViewProduct.id) : false}
         onToggleFavorite={toggleWishlist}
+      />
+
+      {/* Admin & Data Pipeline Modal */}
+      <AdminSyncModal
+        isOpen={isAdminOpen}
+        onClose={() => setIsAdminOpen(false)}
+        totalProductsCount={PRODUCTS.length}
       />
     </main>
   );
