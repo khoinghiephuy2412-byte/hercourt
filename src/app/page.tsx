@@ -19,6 +19,7 @@ import { Footer } from "@/components/Footer";
 export default function HomePage() {
   const { wishlist, count, toggleWishlist, isFavorite } = useWishlist();
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
+  const [selectedStore, setSelectedStore] = useState<string>("all");
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [isWishlistOpen, setIsWishlistOpen] = useState<boolean>(false);
   const [isAdminOpen, setIsAdminOpen] = useState<boolean>(false);
@@ -72,6 +73,8 @@ export default function HomePage() {
         products={PRODUCTS}
         selectedCategory={selectedCategory}
         onSelectCategory={setSelectedCategory}
+        selectedStore={selectedStore}
+        onSelectStore={setSelectedStore}
         searchQuery={searchQuery}
         onSearchChange={setSearchQuery}
         wishlist={wishlist}
@@ -89,7 +92,10 @@ export default function HomePage() {
       />
 
       {/* 8. Local Store Directory & Map Navigation */}
-      <StoreLocator />
+      <StoreLocator
+        onSelectStoreForGrid={setSelectedStore}
+        onQuickViewProduct={setQuickViewProduct}
+      />
 
       {/* 9. Global Brand Footer */}
       <Footer />

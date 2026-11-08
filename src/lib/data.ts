@@ -88,6 +88,7 @@ export const STORES: Store[] = [
     name: "BEYONO Sportswear Biên Hòa",
     shortName: "BEYONO",
     address: "2 Võ Thị Sáu, P. Quyết Thắng, TP. Biên Hòa",
+    ward: "P. Quyết Thắng",
     city: "Biên Hòa, Đồng Nai",
     website: "https://beyono.vn",
     mapsUrl: "https://www.google.com/maps/search/?api=1&query=BEYONO+2+Vo+Thi+Sau+Bien+Hoa",
@@ -97,13 +98,16 @@ export const STORES: Store[] = [
     phone: "1900 636 106",
     hours: "08:00 - 21:30 hàng ngày",
     productCount: 16,
-    provenanceNote: "Nguồn chính hãng phân phối tại showroom Biên Hòa"
+    provenanceNote: "Nguồn chính hãng phân phối tại showroom Biên Hòa",
+    accentColor: "#722D4A",
+    tagline: "Showroom thể thao bóng chuyền & cầu lông chính hãng"
   },
   {
     id: "vnb-cn2",
     name: "VNB Sports — Chi nhánh 2",
     shortName: "VNB CN2",
     address: "45 Hưng Đạo Vương, P. Trung Dũng, TP. Biên Hòa",
+    ward: "P. Trung Dũng",
     city: "Biên Hòa, Đồng Nai",
     website: "https://shopvnb.com/vnb-bien-hoa-cn2",
     mapsUrl: "https://www.google.com/maps/search/?api=1&query=VNB+45+Hung+Dao+Vuong+Bien+Hoa",
@@ -113,13 +117,16 @@ export const STORES: Store[] = [
     phone: "0788 612 979",
     hours: "08:00 - 21:00 hàng ngày",
     productCount: 8,
-    provenanceNote: "Chuỗi bán lẻ chuyên dụng cầu lông & pickleball hàng đầu Việt Nam"
+    provenanceNote: "Chuỗi bán lẻ chuyên dụng cầu lông & pickleball hàng đầu Việt Nam",
+    accentColor: "#10B981",
+    tagline: "Đại lý ủy quyền VNB, vợt và thời trang thi đấu nữ"
   },
   {
     id: "vnb-cn1",
     name: "VNB Sports — Chi nhánh 1",
     shortName: "VNB CN1",
     address: "683 Phạm Văn Thuận, P. Tam Hiệp, TP. Biên Hòa",
+    ward: "P. Tam Hiệp",
     city: "Biên Hòa, Đồng Nai",
     website: "https://shopvnb.com/vnb-bien-hoa",
     mapsUrl: "https://www.google.com/maps/search/?api=1&query=VNB+683+Pham+Van+Thuan+Bien+Hoa",
@@ -129,13 +136,16 @@ export const STORES: Store[] = [
     phone: "0908 612 979",
     hours: "08:00 - 21:00 hàng ngày",
     productCount: 3,
-    provenanceNote: "Chi nhánh đầu tiên của VNB tại trục giao thông chính Tam Hiệp"
+    provenanceNote: "Chi nhánh đầu tiên của VNB tại trục giao thông chính Tam Hiệp",
+    accentColor: "#F59E0B",
+    tagline: "Trục giao thông Tam Hiệp, đầy đủ trang phục cầu lông"
   },
   {
     id: "phuong-sport",
     name: "Phượng Sport — Siêu Thị Thể Thao",
     shortName: "Phượng Sport",
     address: "384 Phạm Văn Thuận, P. Trung Dũng, TP. Biên Hòa",
+    ward: "P. Trung Dũng",
     city: "Biên Hòa, Đồng Nai",
     website: "https://phuongsport.com.vn",
     mapsUrl: "https://www.google.com/maps/search/?api=1&query=Phuong+Sport+384+Pham+Van+Thuan+Bien+Hoa",
@@ -145,13 +155,16 @@ export const STORES: Store[] = [
     phone: "0918 274 779",
     hours: "07:30 - 21:30 hàng ngày",
     productCount: 3,
-    provenanceNote: "Cửa hàng thể thao truyền thống lâu năm và có quy mô trưng bày lớn tại Biên Hòa"
+    provenanceNote: "Cửa hàng thể thao truyền thống lâu năm và có quy mô trưng bày lớn tại Biên Hòa",
+    accentColor: "#0284C7",
+    tagline: "Siêu thị thể thao đa năng, đồ tập gym, yoga & aerobic"
   },
   {
     id: "xb-sports",
     name: "XB Sports — Chi nhánh Biên Hòa",
     shortName: "XB Sports",
     address: "1212 Phạm Văn Thuận, KP.1, P. Tân Tiến, TP. Biên Hòa",
+    ward: "P. Tân Tiến",
     city: "Biên Hòa, Đồng Nai",
     website: "https://xbsports.vn",
     mapsUrl: "https://www.google.com/maps/search/?api=1&query=XB+Sports+1212+Pham+Van+Thuan+Bien+Hoa",
@@ -161,13 +174,16 @@ export const STORES: Store[] = [
     phone: "0909 888 121",
     hours: "08:00 - 21:00 hàng ngày",
     productCount: 3,
-    provenanceNote: "Hệ thống chuyên đồ thi đấu cầu lông chính hãng chi nhánh Tân Tiến"
+    provenanceNote: "Hệ thống chuyên đồ thi đấu cầu lông chính hãng chi nhánh Tân Tiến",
+    accentColor: "#EF4444",
+    tagline: "Chuyên sâu Li-Ning, Hundred, Yonex cho phái đẹp"
   },
   {
     id: "chien-thang",
     name: "Shop Cầu Lông & Pickleball Chiến Thắng",
     shortName: "Chiến Thắng Sport",
     address: "C34 Khu phố 4, P. Bình Đa, TP. Biên Hòa",
+    ward: "P. Bình Đa",
     city: "Biên Hòa, Đồng Nai",
     website: "https://votcaulongbienhoa.com",
     mapsUrl: "https://www.google.com/maps/search/?api=1&query=Chien+Thang+C34+Binh+Da+Bien+Hoa",
@@ -177,13 +193,16 @@ export const STORES: Store[] = [
     phone: "0979 123 789",
     hours: "08:00 - 20:30 hàng ngày",
     productCount: 2,
-    provenanceNote: "Cửa hàng chuyên Pickleball và Cầu lông phục vụ cộng đồng thể thao Bình Đa"
+    provenanceNote: "Cửa hàng chuyên Pickleball và Cầu lông phục vụ cộng đồng thể thao Bình Đa",
+    accentColor: "#84CC16",
+    tagline: "Điểm hẹn Pickleball sôi động hàng đầu Biên Hòa"
   },
   {
     id: "chun-sport",
     name: "Chun Sport Cầu Lông",
     shortName: "Chun Sport",
     address: "61 Trương Định, KP.2, P. Tân Mai, TP. Biên Hòa",
+    ward: "P. Tân Mai",
     city: "Biên Hòa, Đồng Nai",
     website: "https://chunsport.vn",
     mapsUrl: "https://www.google.com/maps/search/?api=1&query=Chun+Sport+61+Truong+Dinh+Bien+Hoa",
@@ -193,13 +212,16 @@ export const STORES: Store[] = [
     phone: "0938 123 456",
     hours: "08:30 - 21:00 hàng ngày",
     productCount: 1,
-    provenanceNote: "Điểm đan vợt và mua sắm trang phục thể thao phong cách trẻ trung tại Tân Mai"
+    provenanceNote: "Điểm đan vợt và mua sắm trang phục thể thao phong cách trẻ trung tại Tân Mai",
+    accentColor: "#8B5CF6",
+    tagline: "Cầu lông phong cách trẻ trung & đan vợt chuẩn thi đấu"
   },
   {
     id: "lan-nhi",
     name: "Thể Thao Lan Nhi",
     shortName: "Lan Nhi Sport",
     address: "410 Đồng Khởi, KP.3, P. Tân Hiệp, TP. Biên Hòa",
+    ward: "P. Tân Hiệp",
     city: "Biên Hòa, Đồng Nai",
     website: "https://lannhisport.vn",
     mapsUrl: "https://www.google.com/maps/search/?api=1&query=Lan+Nhi+Sport+410+Dong+Khoi+Bien+Hoa",
@@ -209,13 +231,16 @@ export const STORES: Store[] = [
     phone: "0903 667 889",
     hours: "08:00 - 21:00 hàng ngày",
     productCount: 1,
-    provenanceNote: "Địa chỉ quen thuộc cho các bộ môn Aerobic, Fitness và đồ tập nữ trên đường Đồng Khởi"
+    provenanceNote: "Địa chỉ quen thuộc cho các bộ môn Aerobic, Fitness và đồ tập nữ trên đường Đồng Khởi",
+    accentColor: "#EC4899",
+    tagline: "Trang phục Aerobic, Fitness, Yoga nữ đường Đồng Khởi"
   },
   {
     id: "thang-sport",
     name: "Thắng Sport Biên Hòa",
     shortName: "Thắng Sport",
     address: "246 Nguyễn Ái Quốc, P. Tân Tiến, TP. Biên Hòa",
+    ward: "P. Tân Tiến",
     city: "Biên Hòa, Đồng Nai",
     website: "https://thangsport.vn",
     mapsUrl: "https://www.google.com/maps/search/?api=1&query=Thang+Sport+Nguyen+Ai+Quoc+Bien+Hoa",
@@ -225,13 +250,16 @@ export const STORES: Store[] = [
     phone: "0251 382 3456",
     hours: "08:00 - 21:00 hàng ngày",
     productCount: 1,
-    provenanceNote: "Cửa hàng mặt phố sầm uất trên đường Nguyễn Ái Quốc"
+    provenanceNote: "Cửa hàng mặt phố sầm uất trên đường Nguyễn Ái Quốc",
+    accentColor: "#06B6D4",
+    tagline: "Cửa hàng thể thao phong trào đường Nguyễn Ái Quốc"
   },
   {
     id: "mai-sport",
     name: "Mai Sport Biên Hòa",
     shortName: "Mai Sport",
     address: "18 Phan Trung, P. Tân Mai, TP. Biên Hòa",
+    ward: "P. Tân Mai",
     city: "Biên Hòa, Đồng Nai",
     website: "https://maisport.vn",
     mapsUrl: "https://www.google.com/maps/search/?api=1&query=Mai+Sport+Phan+Trung+Bien+Hoa",
@@ -241,7 +269,9 @@ export const STORES: Store[] = [
     phone: "0251 381 2345",
     hours: "08:00 - 20:30 hàng ngày",
     productCount: 1,
-    provenanceNote: "Cửa hàng khu dân cư Tân Mai phục vụ nhu cầu tập luyện hàng ngày"
+    provenanceNote: "Cửa hàng khu dân cư Tân Mai phục vụ nhu cầu tập luyện hàng ngày",
+    accentColor: "#A855F7",
+    tagline: "Cửa hàng khu dân cư Tân Mai phục vụ nhu cầu tập luyện hàng ngày"
   }
 ];
 

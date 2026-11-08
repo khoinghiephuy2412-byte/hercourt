@@ -9,6 +9,8 @@ interface ProductGridProps {
   products: Product[];
   selectedCategory: string;
   onSelectCategory: (cat: string) => void;
+  selectedStore?: string;
+  onSelectStore?: (store: string) => void;
   searchQuery: string;
   onSearchChange: (q: string) => void;
   wishlist: string[];
@@ -20,6 +22,8 @@ export const ProductGrid: React.FC<ProductGridProps> = ({
   products,
   selectedCategory,
   onSelectCategory,
+  selectedStore: controlledStore,
+  onSelectStore,
   searchQuery,
   onSearchChange,
   wishlist,
@@ -28,7 +32,9 @@ export const ProductGrid: React.FC<ProductGridProps> = ({
 }) => {
   const [selectedSport, setSelectedSport] = useState<string>("all");
   const [selectedScope, setSelectedScope] = useState<string>("all");
-  const [selectedStore, setSelectedStore] = useState<string>("all");
+  const [internalStore, setInternalStore] = useState<string>("all");
+  const selectedStore = controlledStore !== undefined ? controlledStore : internalStore;
+  const setSelectedStore = onSelectStore || setInternalStore;
   const [sortBy, setSortBy] = useState<"featured" | "low" | "high" | "under200">("featured");
 
   // Dynamic counts for category tabs

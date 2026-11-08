@@ -91,6 +91,7 @@ export interface Store {
   name: string;
   shortName: string;
   address: string;
+  ward?: string;
   city: string;
   website: string;
   mapsUrl: string;
@@ -102,6 +103,8 @@ export interface Store {
   productCount: number;
   branches?: StoreBranch[];
   provenanceNote?: string;
+  accentColor?: string;
+  tagline?: string;
 }
 
 export interface Category {
