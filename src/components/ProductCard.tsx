@@ -21,6 +21,14 @@ export const ProductCard: React.FC<ProductCardProps> = ({
 }) => {
   const [imageError, setImageError] = useState(false);
   const [imageLoaded, setImageLoaded] = useState(false);
+  const hasAiModel = Boolean(product.aiModelImageUrl);
+  const [viewAiModel, setViewAiModel] = useState(
+    product.photoSourceType === "ai_styling_visualization" && hasAiModel
+  );
+
+  const currentImage = viewAiModel && product.aiModelImageUrl
+    ? product.aiModelImageUrl
+    : product.imageUrl;
 
   return (
     <article className="group relative bg-[#181D25] border border-[#2B3441] rounded-2xl overflow-hidden hover:border-[#E8A9C3]/60 transition-all duration-300 flex flex-col justify-between hover:shadow-xl hover:shadow-[#000]/40 card-premium-hover">
@@ -47,7 +55,12 @@ export const ProductCard: React.FC<ProductCardProps> = ({
             <Trophy className="w-2.5 h-2.5" />
             <span>{product.sport}</span>
           </span>
-          {product.isRealPhoto && !imageError && imageLoaded ? (
+          {viewAiModel || product.photoSourceType === "ai_styling_visualization" ? (
+            <span className="text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md bg-purple-950/90 text-[#FAF9F6] border border-purple-400/40 flex items-center gap-1 shadow-sm">
+              <Sparkles className="w-2.5 h-2.5 text-[#D9FF3F]" />
+              <span>Ảnh phối mẫu AI</span>
+            </span>
+          ) : product.isRealPhoto && !imageError && imageLoaded ? (
             <span className="text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md bg-[#722D4A]/90 text-[#FAF9F6] border border-[#E8A9C3]/30 flex items-center gap-1 shadow-sm">
               <Camera className="w-2.5 h-2.5 text-[#D9FF3F]" />
               <span>Ảnh thật từ shop</span>
@@ -59,6 +72,45 @@ export const ProductCard: React.FC<ProductCardProps> = ({
             </span>
           )}
         </div>
+
+        {/* Dual-View Switcher: Shop Photo vs AI Model Styling */}
+        {hasAiModel && product.imageUrl && product.imageUrl !== product.aiModelImageUrl && (
+          <div
+            className="absolute top-3 right-12 z-20 flex items-center rounded-lg bg-[#11151B]/90 border border-[#2B3441] p-0.5 text-[9px] font-bold shadow-md"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              type="button"
+              onClick={() => {
+                setViewAiModel(false);
+                setImageLoaded(false);
+              }}
+              className={`px-1.5 py-0.5 rounded transition-colors ${
+                !viewAiModel
+                  ? "bg-[#722D4A] text-white"
+                  : "text-gray-400 hover:text-white"
+              }`}
+              title="Xem ảnh thực tế từ shop"
+            >
+              Shop
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                setViewAiModel(true);
+                setImageLoaded(false);
+              }}
+              className={`px-1.5 py-0.5 rounded transition-colors ${
+                viewAiModel
+                  ? "bg-purple-700 text-white"
+                  : "text-gray-400 hover:text-white"
+              }`}
+              title="Xem ảnh phối mẫu AI"
+            >
+              Mẫu AI
+            </button>
+          </div>
+        )}
 
         {/* Favorite Heart Button in top-right */}
         <button
@@ -76,9 +128,9 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           <Heart className={`w-4 h-4 ${isFavorite ? "fill-[#FAF9F6] text-[#FAF9F6]" : ""}`} />
         </button>
 
-        {/* Product Visual Display: Verified Real Retailer Photo or Fallback Silhouette */}
+        {/* Product Visual Display: Verified Real Retailer Photo, AI Model or Fallback Silhouette */}
         <div className="w-full h-full relative flex items-center justify-center">
-          {product.imageUrl && !imageError ? (
+          {currentImage && !imageError ? (
             <div className="relative w-full h-full">
               {!imageLoaded && (
                 <div className="absolute inset-0 flex items-center justify-center animate-pulse">
@@ -90,7 +142,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
                 </div>
               )}
               <Image
-                src={product.imageUrl}
+                src={currentImage}
                 alt={product.name}
                 fill
                 sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"

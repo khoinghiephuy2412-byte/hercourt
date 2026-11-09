@@ -15,6 +15,11 @@ export type ImageStatus =
   | 'requires_auth' // Chờ cấp phép bản quyền từ thương hiệu / cửa hàng
   | 'restricted';   // Giới hạn bản quyền / hotlink CDN
 
+export type PhotoSourceType =
+  | 'official_female_model'     // Ảnh thật có người mẫu nữ từ hãng / shop
+  | 'official_product_photo'    // Ảnh chụp sản phẩm thật từ shop
+  | 'ai_styling_visualization'; // Ảnh phối mẫu AI / AI styling visualization
+
 export type SportType =
   | 'Cầu lông'
   | 'Pickleball'
@@ -61,6 +66,9 @@ export interface Product {
   imageUrl?: string;
   isRealPhoto: boolean;
   imageStatus?: ImageStatus;
+  photoSourceType?: PhotoSourceType;
+  photoSourceLabel?: string;
+  aiModelImageUrl?: string;
   imageUsageAuth?: string;
   verifiedDate: string;
   verificationScope: VerificationScope;

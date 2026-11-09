@@ -31,6 +31,7 @@ export const ProductGrid: React.FC<ProductGridProps> = ({
   onQuickView,
 }) => {
   const [selectedSport, setSelectedSport] = useState<string>("all");
+  const [selectedPhotoSource, setSelectedPhotoSource] = useState<string>("all");
   const [selectedScope, setSelectedScope] = useState<string>("all");
   const [internalStore, setInternalStore] = useState<string>("all");
   const selectedStore = controlledStore !== undefined ? controlledStore : internalStore;
@@ -48,10 +49,10 @@ export const ProductGrid: React.FC<ProductGridProps> = ({
 
   const categories = [
     { id: "all", label: `Tất cả (${products.length})` },
-    { id: "Váy", label: `Váy (${categoryCounts["Váy"] || 0})` },
-    { id: "Áo", label: `Áo (${categoryCounts["Áo"] || 0})` },
-    { id: "Bộ đồ", label: `Bộ đồ (${categoryCounts["Bộ đồ"] || 0})` },
-    { id: "Quần", label: `Quần (${categoryCounts["Quần"] || 0})` },
+    { id: "Áo", label: `Áo Cầu Lông (${categoryCounts["Áo"] || 0})` },
+    { id: "Váy", label: `Váy Cầu Lông (${categoryCounts["Váy"] || 0})` },
+    { id: "Bộ đồ", label: `Bộ Đồ Cầu Lông (${categoryCounts["Bộ đồ"] || 0})` },
+    { id: "Quần", label: `Quần / Short (${categoryCounts["Quần"] || 0})` },
     { id: "favorites", label: `Yêu thích (${wishlist.length})` },
   ];
 
@@ -75,6 +76,13 @@ export const ProductGrid: React.FC<ProductGridProps> = ({
         // Sport filter
         if (selectedSport !== "all" && p.sport !== selectedSport) {
           return false;
+        }
+
+        // Photo Source filter
+        if (selectedPhotoSource === "shop") {
+          if (p.photoSourceType === "ai_styling_visualization") return false;
+        } else if (selectedPhotoSource === "ai") {
+          if (p.photoSourceType !== "ai_styling_visualization" && !p.aiModelImageUrl) return false;
         }
 
         // Verification Scope filter
@@ -121,11 +129,13 @@ export const ProductGrid: React.FC<ProductGridProps> = ({
     searchQuery,
     sortBy,
     wishlist,
+    selectedPhotoSource,
   ]);
 
   const handleResetFilters = () => {
     onSelectCategory("all");
     setSelectedSport("all");
+    setSelectedPhotoSource("all");
     setSelectedScope("all");
     setSelectedStore("all");
     setSortBy("featured");
@@ -135,6 +145,7 @@ export const ProductGrid: React.FC<ProductGridProps> = ({
   const hasActiveFilters =
     selectedCategory !== "all" ||
     selectedSport !== "all" ||
+    selectedPhotoSource !== "all" ||
     selectedScope !== "all" ||
     selectedStore !== "all" ||
     sortBy !== "featured" ||
@@ -186,40 +197,49 @@ export const ProductGrid: React.FC<ProductGridProps> = ({
             })}
           </div>
 
-          {/* Row 2: Sport Filter Chips (Pickleball, Badminton, Tennis, etc.) */}
+          {/* Row 2: Photo Source & AI Styling Filter */}
           <div className="flex items-center gap-2 overflow-x-auto pb-2 border-t border-[#2B3441]/50 pt-3 no-scrollbar">
             <span className="text-[10px] font-mono uppercase tracking-widest text-[#FAF9F6]/40 flex items-center gap-1 mr-1 whitespace-nowrap">
-              <Trophy className="w-3 h-3 text-[#D9FF3F]" />
-              Bộ môn:
+              <Sparkles className="w-3 h-3 text-[#D9FF3F]" />
+              Nguồn ảnh:
             </span>
             <button
-              onClick={() => setSelectedSport("all")}
+              onClick={() => setSelectedPhotoSource("all")}
               className={`px-3 py-1.5 rounded-lg text-xs font-bold whitespace-nowrap transition-all ${
-                selectedSport === "all"
+                selectedPhotoSource === "all"
+                  ? "bg-[#D9FF3F] text-[#11151B] font-black shadow-sm"
+                  : "bg-[#11151B] text-[#FAF9F6]/70 hover:text-white border border-[#2B3441]"
+              }`}
+            >
+              Tất cả mẫu ({products.length})
+            </button>
+            <button
+              onClick={() => setSelectedPhotoSource("shop")}
+              className={`px-3 py-1.5 rounded-lg text-xs font-bold whitespace-nowrap transition-all flex items-center gap-1.5 ${
+                selectedPhotoSource === "shop"
                   ? "bg-[#722D4A] text-[#FAF9F6] border border-[#E8A9C3]/40 shadow-sm"
                   : "bg-[#11151B] text-[#FAF9F6]/70 hover:text-white border border-[#2B3441]"
               }`}
             >
-              Tất cả bộ môn
+              <span>Ảnh thật từ shop</span>
+              <span className="text-[10px] font-mono opacity-70">
+                ({products.filter((p) => p.photoSourceType !== "ai_styling_visualization").length})
+              </span>
             </button>
-            {SPORTS.map((sport) => {
-              const active = selectedSport === sport.name;
-              const count = products.filter((p) => p.sport === sport.name).length;
-              return (
-                <button
-                  key={sport.id}
-                  onClick={() => setSelectedSport(sport.name)}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-bold whitespace-nowrap transition-all flex items-center gap-1.5 ${
-                    active
-                      ? "bg-[#722D4A] text-[#FAF9F6] border border-[#E8A9C3]/40 shadow-sm"
-                      : "bg-[#11151B] text-[#FAF9F6]/70 hover:text-white border border-[#2B3441]"
-                  }`}
-                >
-                  <span>{sport.name}</span>
-                  <span className="text-[10px] font-mono opacity-60">({count})</span>
-                </button>
-              );
-            })}
+            <button
+              onClick={() => setSelectedPhotoSource("ai")}
+              className={`px-3 py-1.5 rounded-lg text-xs font-bold whitespace-nowrap transition-all flex items-center gap-1.5 ${
+                selectedPhotoSource === "ai"
+                  ? "bg-purple-900 text-[#FAF9F6] border border-purple-400 shadow-sm"
+                  : "bg-[#11151B] text-purple-300 hover:text-white border border-purple-900/50"
+              }`}
+            >
+              <Sparkles className="w-3 h-3 text-[#D9FF3F]" />
+              <span>Ảnh phối mẫu AI</span>
+              <span className="text-[10px] font-mono opacity-70">
+                ({products.filter((p) => p.photoSourceType === "ai_styling_visualization" || !!p.aiModelImageUrl).length})
+              </span>
+            </button>
           </div>
 
           {/* Row 3: Verification Scope Pills */}
@@ -270,7 +290,7 @@ export const ProductGrid: React.FC<ProductGridProps> = ({
                 type="text"
                 value={searchQuery}
                 onChange={(e) => onSearchChange(e.target.value)}
-                placeholder="Tìm tên áo, chân váy, polo, pickleball, thương hiệu..."
+                placeholder="Tìm áo cầu lông, chân váy xếp ly, bộ đồ, BEYONO, VNB, Yonex..."
                 className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-[#11151B] border border-[#2B3441] text-xs text-[#FAF9F6] placeholder-[#FAF9F6]/40 focus:outline-none focus:border-[#D9FF3F] transition-colors"
               />
               {searchQuery && (

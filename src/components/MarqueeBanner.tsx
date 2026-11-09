@@ -2,15 +2,14 @@ import React from "react";
 
 export const MarqueeBanner: React.FC = () => {
   const items = [
-    "OWN THE GAME",
-    "FASHION THAT MOVES WITH YOU",
-    "BIÊN HÒA SPORTSWEAR DISCOVERY",
-    "BEYONO · VNB SPORTS · PHƯỢNG SPORT",
-    "WEAR THE ENERGY",
+    "OWN THE COURT",
+    "THỜI TRANG CẦU LÔNG NỮ BIÊN HÒA",
+    "BEYONO · SHOPVNB · XB SPORTS · CHUN SPORT",
+    "ÁO CẦU LÔNG NỮ · VÁY XẾP LY · BỘ ĐỒ THI ĐẤU",
     "100% SẢN PHẨM CHÍNH HÃNG",
-    "VÁY THỂ THAO XẾP LY",
-    "CẦU LÔNG · TENNIS · PICKLEBALL",
-    "CHỈ ĐƯỜNG TRỰC TIẾP CỬA HÀNG",
+    "ẢNH PHỐI MẪU AI & ẢNH THẬT TỪ SHOP",
+    "ĐỐI CHIẾU GIÁ NIÊM YẾT MINH BẠCH",
+    "CHỈ ĐƯỜNG MUA SẮM TẬN NƠI",
   ];
 
   return (

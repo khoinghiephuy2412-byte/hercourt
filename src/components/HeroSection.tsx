@@ -28,14 +28,14 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
             <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#181D25] border border-[#722D4A]/50 w-fit mb-6 shadow-sm">
               <Sparkles className="w-3.5 h-3.5 text-[#D9FF3F]" />
               <span className="text-[11px] font-black tracking-widest text-[#E8A9C3] uppercase">
-                HERCOURT DISCOVERY · BIÊN HÒA, ĐỒNG NAI
+                HERCOURT · THỜI TRANG CẦU LÔNG NỮ BIÊN HÒA
               </span>
             </div>
 
             {/* Campaign Headline */}
             <div className="mb-4">
               <h1 className="text-4xl sm:text-6xl xl:text-7xl font-black uppercase tracking-[-0.03em] text-[#FAF9F6] leading-[1.02] font-display">
-                OWN THE <span className="text-[#D9FF3F]">GAME.</span>
+                OWN THE <span className="text-[#D9FF3F]">COURT.</span>
                 <br />
                 WEAR THE <span className="text-[#E8A9C3]">ENERGY.</span>
               </h1>
@@ -43,14 +43,13 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
 
             {/* Brand Promise Quote */}
             <p className="text-lg sm:text-xl font-medium text-[#FAF9F6]/90 italic border-l-2 border-[#722D4A] pl-4 my-4 font-serif">
-              “Fashion that moves with you.”
+              “Feminine elegance meets athletic speed.”
             </p>
 
             {/* Editorial Description */}
             <p className="text-sm sm:text-base text-[#FAF9F6]/70 leading-relaxed max-w-xl mb-8 font-normal">
-              Nền tảng khám phá thời trang thể thao nữ chuyên sâu đầu tiên tại Biên Hòa.
-              Tuyển tập chân thực 36 thiết kế trang phục thi đấu từ <strong>BEYONO</strong>, <strong>VNB Sports</strong>, <strong>Phượng Sport</strong>, <strong>XB Sports</strong>, <strong>Chiến Thắng Sport</strong>.
-              Khám phá mẫu mã, đối chiếu giá niêm yết tại quầy và nhận chỉ đường mua sắm tức thì.
+              Nền tảng tuyển chọn chuyên biệt <strong>thời trang cầu lông nữ</strong> đầu tiên tại Biên Hòa.
+              Khám phá 20 thiết kế áo đấu, chân váy xếp ly và bộ đồ thi đấu chính hãng từ <strong>BEYONO</strong>, <strong>ShopVNB</strong>, <strong>XB Sports</strong>, <strong>Chun Sport</strong> với ảnh chụp thật và ảnh phối mẫu AI chuẩn dáng thể thao.
             </p>
 
             {/* Action CTA Buttons */}
@@ -59,7 +58,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                 onClick={onExploreClick}
                 className="px-7 py-3.5 rounded-full bg-[#D9FF3F] text-[#11151B] font-black text-xs sm:text-sm uppercase tracking-wider hover:bg-[#BBE02E] transition-all transform hover:-translate-y-0.5 shadow-lg shadow-[#D9FF3F]/20 flex items-center gap-2 focus-ring"
               >
-                <span>Khám Phá 36 Mẫu Tuyển Chọn</span>
+                <span>Khám Phá 20 Mẫu Cầu Lông Tuyển Chọn</span>
                 <ArrowUpRight className="w-4 h-4 stroke-[3]" />
               </button>
 
@@ -76,10 +75,10 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
             <div className="grid grid-cols-3 gap-4 pt-6 border-t border-[#2B3441]/80 text-left">
               <div>
                 <div className="text-2xl font-black text-[#FAF9F6] flex items-center">
-                  36<span className="text-[#D9FF3F]">+</span>
+                  20<span className="text-[#D9FF3F]"> MẪU</span>
                 </div>
                 <div className="text-[11px] uppercase tracking-wider text-[#FAF9F6]/60 font-semibold mt-0.5">
-                  Mẫu chọn lọc
+                  Đồ Cầu Lông Nữ
                 </div>
               </div>
 

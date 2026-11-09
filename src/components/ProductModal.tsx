@@ -35,6 +35,21 @@ export const ProductModal: React.FC<ProductModalProps> = ({
   const [imageLoaded, setImageLoaded] = useState(false);
   const [selectedSize, setSelectedSize] = useState<string>("");
   const [selectedColor, setSelectedColor] = useState<string>("");
+  const hasAiModel = Boolean(product?.aiModelImageUrl);
+  const [viewAiModel, setViewAiModel] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (product) {
+      setViewAiModel(
+        product.photoSourceType === "ai_styling_visualization" &&
+          Boolean(product.aiModelImageUrl)
+      );
+    }
+  }, [product]);
+
+  const currentImage = viewAiModel && product?.aiModelImageUrl
+    ? product.aiModelImageUrl
+    : product?.imageUrl;
 
   const availableColors = useMemo(() => {
     if (!product?.variants) return [];
@@ -97,7 +112,7 @@ export const ProductModal: React.FC<ProductModalProps> = ({
               style={{ backgroundColor: product.colorHex }}
             />
 
-            {product.imageUrl && !imageError ? (
+            {currentImage && !imageError ? (
               <div className="relative w-full h-full">
                 {!imageLoaded && (
                   <div className="absolute inset-0 flex items-center justify-center animate-pulse">
@@ -109,7 +124,7 @@ export const ProductModal: React.FC<ProductModalProps> = ({
                   </div>
                 )}
                 <Image
-                  src={product.imageUrl}
+                  src={currentImage}
                   alt={product.name}
                   fill
                   priority
@@ -139,10 +154,15 @@ export const ProductModal: React.FC<ProductModalProps> = ({
                 <Trophy className="w-2.5 h-2.5" />
                 <span>{product.sport}</span>
               </span>
-              {product.isRealPhoto && !imageError && imageLoaded ? (
+              {viewAiModel || product.photoSourceType === "ai_styling_visualization" ? (
+                <span className="text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md bg-purple-950/90 text-[#FAF9F6] border border-purple-400/40 flex items-center gap-1 shadow-sm">
+                  <Sparkles className="w-2.5 h-2.5 text-[#D9FF3F]" />
+                  <span>Ảnh phối mẫu AI</span>
+                </span>
+              ) : product.isRealPhoto && !imageError && imageLoaded ? (
                 <span className="text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md bg-[#722D4A] text-[#FAF9F6] border border-[#E8A9C3]/30 flex items-center gap-1 shadow-sm">
                   <Camera className="w-2.5 h-2.5 text-[#D9FF3F]" />
-                  <span>Ảnh thật từ nhà phân phối</span>
+                  <span>Ảnh thật từ shop</span>
                 </span>
               ) : (
                 <span className="text-[9px] font-medium uppercase tracking-wider px-2 py-0.5 rounded-md bg-[#1B222D]/90 text-[#FAF9F6]/70 border border-[#2B3441] flex items-center gap-1 shadow-sm">
@@ -151,6 +171,40 @@ export const ProductModal: React.FC<ProductModalProps> = ({
                 </span>
               )}
             </div>
+
+            {/* Dual-View Switcher inside Modal */}
+            {hasAiModel && product.imageUrl && product.imageUrl !== product.aiModelImageUrl && (
+              <div className="absolute bottom-3 right-3 z-20 flex items-center rounded-lg bg-[#11151B]/95 border border-[#2B3441] p-1 text-[10px] font-bold shadow-lg">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setViewAiModel(false);
+                    setImageLoaded(false);
+                  }}
+                  className={`px-2 py-1 rounded transition-colors ${
+                    !viewAiModel
+                      ? "bg-[#722D4A] text-white"
+                      : "text-gray-400 hover:text-white"
+                  }`}
+                >
+                  Ảnh shop
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setViewAiModel(true);
+                    setImageLoaded(false);
+                  }}
+                  className={`px-2 py-1 rounded transition-colors ${
+                    viewAiModel
+                      ? "bg-purple-700 text-white"
+                      : "text-gray-400 hover:text-white"
+                  }`}
+                >
+                  Mẫu phối AI
+                </button>
+              </div>
+            )}
           </div>
 
           {/* Right Column: Detailed Info */}
@@ -187,10 +241,26 @@ export const ProductModal: React.FC<ProductModalProps> = ({
                   <ShieldCheck className="w-3.5 h-3.5 text-[#D9FF3F]" />
                   <span>Sản phẩm chính hãng tại {product.store}</span>
                 </span>
+                {product.photoSourceType === "ai_styling_visualization" ? (
+                  <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-purple-950/80 border border-purple-500/40 text-[11px] text-purple-200 font-semibold">
+                    <Sparkles className="w-3.5 h-3.5 text-[#D9FF3F]" />
+                    <span>Phối mẫu AI trên VĐV</span>
+                  </span>
+                ) : (
+                  <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-emerald-950/80 border border-emerald-500/40 text-[11px] text-emerald-200 font-semibold">
+                    <Camera className="w-3.5 h-3.5 text-emerald-400" />
+                    <span>Ảnh chụp thật tại shop</span>
+                  </span>
+                )}
                 <span className="text-[11px] text-[#FAF9F6]/50 font-mono">
                   Xác minh: {product.verifiedDate}
                 </span>
               </div>
+              {product.verificationNotes && (
+                <div className="text-[11px] text-[#FAF9F6]/60 bg-[#11151B]/60 border-l-2 border-[#D9FF3F] pl-2.5 py-1 mb-2 font-sans">
+                  {product.verificationNotes}
+                </div>
+              )}
 
               {/* Price */}
               <div className="flex items-baseline gap-3 my-3">
