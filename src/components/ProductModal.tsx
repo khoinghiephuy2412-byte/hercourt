@@ -259,7 +259,7 @@ export const ProductModal: React.FC<ProductModalProps> = ({
                         : "text-gray-400 hover:text-white"
                     }`}
                   >
-                    Mẫu phối AI
+                    Mẫu AI minh họa
                   </button>
                 </div>
               )}
@@ -307,8 +307,8 @@ export const ProductModal: React.FC<ProductModalProps> = ({
                     )}
                   </div>
                   <div className="min-w-0">
-                    <div className="text-[10px] font-bold uppercase truncate">Mẫu phối AI</div>
-                    <div className="text-[9px] text-purple-300 font-mono">Dáng VĐV tham khảo</div>
+                    <div className="text-[10px] font-bold uppercase truncate">Ảnh người mẫu AI minh họa</div>
+                    <div className="text-[9px] text-purple-300 font-mono">Dáng VĐV tham khảo (VTON)</div>
                   </div>
                 </button>
               </div>
