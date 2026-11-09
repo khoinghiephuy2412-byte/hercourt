@@ -56,6 +56,11 @@ export const ProductModal: React.FC<ProductModalProps> = ({
     ? product.aiModelImageUrl
     : product?.imageUrl;
 
+  useEffect(() => {
+    setImageError(false);
+    setImageLoaded(true);
+  }, [currentImage]);
+
   const availableColors = useMemo(() => {
     if (!product?.variants) return [];
     return Array.from(new Set(product.variants.map((v) => v.color)));
@@ -185,13 +190,14 @@ export const ProductModal: React.FC<ProductModalProps> = ({
                     </div>
                   )}
                   <Image
+                    key={currentImage}
                     src={currentImage}
                     alt={product.name}
                     fill
                     priority
                     sizes="(max-width: 768px) 100vw, 400px"
                     className={`object-contain p-2 transition-all duration-300 ${
-                      imageLoaded ? "opacity-100 scale-100" : "opacity-0 scale-95"
+                      imageLoaded ? "opacity-100 scale-100" : "opacity-90 scale-95"
                     }`}
                     onLoad={() => setImageLoaded(true)}
                     onError={() => setImageError(true)}

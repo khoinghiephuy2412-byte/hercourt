@@ -69,6 +69,10 @@ export interface Product {
   photoSourceType?: PhotoSourceType;
   photoSourceLabel?: string;
   aiModelImageUrl?: string;
+  originalImageUrl?: string;
+  aiModelStatus?: 'approved' | 'pending' | 'rejected';
+  imageSource?: string;
+  generationApprovalStatus?: 'approved' | 'pending' | 'rejected';
   imageUsageAuth?: string;
   verifiedDate: string;
   verificationScope: VerificationScope;

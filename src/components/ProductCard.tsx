@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import { Product, formatVND } from "@/lib/data";
 import { GarmentVisual } from "./GarmentVisual";
@@ -30,6 +30,11 @@ export const ProductCard: React.FC<ProductCardProps> = ({
   const currentImage = viewAiModel && product.aiModelImageUrl
     ? product.aiModelImageUrl
     : product.imageUrl;
+
+  useEffect(() => {
+    setImageError(false);
+    setImageLoaded(true);
+  }, [currentImage]);
 
   return (
     <article className="group relative bg-[#181D25] border border-[#2B3441] rounded-2xl overflow-hidden hover:border-[#E8A9C3]/60 transition-all duration-300 flex flex-col justify-between hover:shadow-xl hover:shadow-[#000]/40 card-premium-hover">
@@ -153,12 +158,13 @@ export const ProductCard: React.FC<ProductCardProps> = ({
                 </div>
               )}
               <Image
+                key={currentImage}
                 src={currentImage}
                 alt={product.name}
                 fill
                 sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
-                className={`object-contain p-2 group-hover:scale-105 transition-all duration-500 ease-out ${
-                  imageLoaded ? "opacity-100 scale-100" : "opacity-0 scale-95"
+                className={`object-contain p-2 group-hover:scale-105 transition-all duration-300 ease-out ${
+                  imageLoaded ? "opacity-100 scale-100" : "opacity-90 scale-95"
                 }`}
                 onLoad={() => setImageLoaded(true)}
                 onError={() => setImageError(true)}
