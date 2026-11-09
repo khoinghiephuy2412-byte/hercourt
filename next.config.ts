@@ -11,6 +11,9 @@ const nextConfig: NextConfig = {
       { protocol: "https", hostname: "www.beyono.vn" },
       { protocol: "https", hostname: "cdn.hstatic.net" },
       { protocol: "https", hostname: "hstatic.net" },
+      { protocol: "https", hostname: "product.hstatic.net" },
+      { protocol: "https", hostname: "file.hstatic.net" },
+      { protocol: "https", hostname: "theme.hstatic.net" },
     ],
   },
 };

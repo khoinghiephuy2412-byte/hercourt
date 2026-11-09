@@ -9,6 +9,12 @@ export type ProductStatus =
   | 'unavailable'  // Tạm hết hàng
   | 'needs_review';// Cần kiểm duyệt thủ công
 
+export type ImageStatus =
+  | 'verified'      // Ảnh thật từ nhà phân phối / cửa hàng đã tải thành công
+  | 'missing'       // Chưa có ảnh thật từ cửa hàng
+  | 'requires_auth' // Chờ cấp phép bản quyền từ thương hiệu / cửa hàng
+  | 'restricted';   // Giới hạn bản quyền / hotlink CDN
+
 export type SportType =
   | 'Cầu lông'
   | 'Pickleball'
@@ -54,6 +60,7 @@ export interface Product {
   url: string;
   imageUrl?: string;
   isRealPhoto: boolean;
+  imageStatus?: ImageStatus;
   imageUsageAuth?: string;
   verifiedDate: string;
   verificationScope: VerificationScope;

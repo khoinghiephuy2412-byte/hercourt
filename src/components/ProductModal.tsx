@@ -14,6 +14,7 @@ import {
   ShieldCheck,
   TrendingDown,
   Trophy,
+  Sparkles,
 } from "lucide-react";
 
 interface ProductModalProps {
@@ -31,6 +32,7 @@ export const ProductModal: React.FC<ProductModalProps> = ({
 }) => {
   const [prevProductId, setPrevProductId] = useState<string | null>(null);
   const [imageError, setImageError] = useState(false);
+  const [imageLoaded, setImageLoaded] = useState(false);
   const [selectedSize, setSelectedSize] = useState<string>("");
   const [selectedColor, setSelectedColor] = useState<string>("");
 
@@ -47,6 +49,7 @@ export const ProductModal: React.FC<ProductModalProps> = ({
   if (product && product.id !== prevProductId) {
     setPrevProductId(product.id);
     setImageError(false);
+    setImageLoaded(false);
     setSelectedSize(product.variants?.[0]?.size || "M");
     setSelectedColor(product.variants?.[0]?.color || "Tiêu chuẩn");
   }
@@ -96,13 +99,25 @@ export const ProductModal: React.FC<ProductModalProps> = ({
 
             {product.imageUrl && !imageError ? (
               <div className="relative w-full h-full">
+                {!imageLoaded && (
+                  <div className="absolute inset-0 flex items-center justify-center animate-pulse">
+                    <GarmentVisual
+                      shape={product.shape}
+                      colorHex={product.colorHex}
+                      className="w-full h-full max-h-[160px] opacity-30"
+                    />
+                  </div>
+                )}
                 <Image
                   src={product.imageUrl}
                   alt={product.name}
                   fill
                   priority
                   sizes="(max-width: 768px) 100vw, 400px"
-                  className="object-contain p-2"
+                  className={`object-contain p-2 transition-all duration-300 ${
+                    imageLoaded ? "opacity-100 scale-100" : "opacity-0 scale-95"
+                  }`}
+                  onLoad={() => setImageLoaded(true)}
                   onError={() => setImageError(true)}
                 />
               </div>
@@ -124,10 +139,15 @@ export const ProductModal: React.FC<ProductModalProps> = ({
                 <Trophy className="w-2.5 h-2.5" />
                 <span>{product.sport}</span>
               </span>
-              {product.isRealPhoto && !imageError && (
-                <span className="text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md bg-[#722D4A] text-[#FAF9F6] border border-[#E8A9C3]/30 flex items-center gap-1">
+              {product.isRealPhoto && !imageError && imageLoaded ? (
+                <span className="text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md bg-[#722D4A] text-[#FAF9F6] border border-[#E8A9C3]/30 flex items-center gap-1 shadow-sm">
                   <Camera className="w-2.5 h-2.5 text-[#D9FF3F]" />
                   <span>Ảnh thật từ nhà phân phối</span>
+                </span>
+              ) : (
+                <span className="text-[9px] font-medium uppercase tracking-wider px-2 py-0.5 rounded-md bg-[#1B222D]/90 text-[#FAF9F6]/70 border border-[#2B3441] flex items-center gap-1 shadow-sm">
+                  <Sparkles className="w-2.5 h-2.5 text-[#E8A9C3]" />
+                  <span>Minh họa phom dáng</span>
                 </span>
               )}
             </div>

@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import Image from "next/image";
 import { Product, formatVND } from "@/lib/data";
 import { GarmentVisual } from "./GarmentVisual";
-import { Heart, ExternalLink, Eye, Camera, CheckCircle2, ShieldCheck, Trophy } from "lucide-react";
+import { Heart, ExternalLink, Eye, Camera, CheckCircle2, ShieldCheck, Trophy, Sparkles } from "lucide-react";
 
 interface ProductCardProps {
   product: Product;
@@ -20,6 +20,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
   onQuickView,
 }) => {
   const [imageError, setImageError] = useState(false);
+  const [imageLoaded, setImageLoaded] = useState(false);
 
   return (
     <article className="group relative bg-[#181D25] border border-[#2B3441] rounded-2xl overflow-hidden hover:border-[#E8A9C3]/60 transition-all duration-300 flex flex-col justify-between hover:shadow-xl hover:shadow-[#000]/40 card-premium-hover">
@@ -46,10 +47,15 @@ export const ProductCard: React.FC<ProductCardProps> = ({
             <Trophy className="w-2.5 h-2.5" />
             <span>{product.sport}</span>
           </span>
-          {product.isRealPhoto && !imageError && (
+          {product.isRealPhoto && !imageError && imageLoaded ? (
             <span className="text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md bg-[#722D4A]/90 text-[#FAF9F6] border border-[#E8A9C3]/30 flex items-center gap-1 shadow-sm">
               <Camera className="w-2.5 h-2.5 text-[#D9FF3F]" />
               <span>Ảnh thật từ shop</span>
+            </span>
+          ) : (
+            <span className="text-[9px] font-medium uppercase tracking-wider px-2 py-0.5 rounded-md bg-[#1B222D]/90 text-[#FAF9F6]/70 border border-[#2B3441] flex items-center gap-1 shadow-sm">
+              <Sparkles className="w-2.5 h-2.5 text-[#E8A9C3]" />
+              <span>Minh họa phom dáng</span>
             </span>
           )}
         </div>
@@ -74,12 +80,24 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         <div className="w-full h-full relative flex items-center justify-center">
           {product.imageUrl && !imageError ? (
             <div className="relative w-full h-full">
+              {!imageLoaded && (
+                <div className="absolute inset-0 flex items-center justify-center animate-pulse">
+                  <GarmentVisual
+                    shape={product.shape}
+                    colorHex={product.colorHex}
+                    className="w-full h-full max-h-[140px] opacity-30"
+                  />
+                </div>
+              )}
               <Image
                 src={product.imageUrl}
                 alt={product.name}
                 fill
                 sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
-                className="object-contain p-2 group-hover:scale-105 transition-transform duration-500 ease-out"
+                className={`object-contain p-2 group-hover:scale-105 transition-all duration-500 ease-out ${
+                  imageLoaded ? "opacity-100 scale-100" : "opacity-0 scale-95"
+                }`}
+                onLoad={() => setImageLoaded(true)}
                 onError={() => setImageError(true)}
               />
             </div>
