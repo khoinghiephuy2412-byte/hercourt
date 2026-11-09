@@ -85,6 +85,7 @@ export interface Product {
   branchAvailability?: string[];
   lastCheckedTimestamp?: string;
   confidenceScore?: number; // 0 - 100
+  hasVerifiedUrl?: boolean; // True if product has direct working verified URL; false for offline-only/unverified
 
   // Enhanced audit & structured schema fields (Priority 4)
   productId?: string;

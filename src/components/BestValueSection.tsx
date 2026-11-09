@@ -4,7 +4,8 @@ import React from "react";
 import Image from "next/image";
 import { Product, PRODUCTS, formatVND } from "@/lib/data";
 import { GarmentVisual } from "./GarmentVisual";
-import { ExternalLink, Sparkles, Camera } from "lucide-react";
+import { ExternalLink, Sparkles, Camera, MapPin } from "lucide-react";
+import { useIsMobile, handleExternalLinkClick } from "@/lib/useMobileDevice";
 
 interface BestValueSectionProps {
   onQuickView: (product: Product) => void;
@@ -14,6 +15,7 @@ interface BestValueSectionProps {
 export const BestValueSection: React.FC<BestValueSectionProps> = ({
   onQuickView,
 }) => {
+  const isMobile = useIsMobile();
   // Products under or equal to 200.000đ sorted ascending
   const budgetProducts = PRODUCTS.filter((p) => p.price <= 200000).sort(
     (a, b) => a.price - b.price
@@ -99,15 +101,29 @@ export const BestValueSection: React.FC<BestValueSectionProps> = ({
                 >
                   Chi tiết
                 </button>
-                <a
-                  href={p.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="px-3 py-1.5 rounded-lg bg-[#722D4A] hover:bg-[#8E3B5E] text-[#FAF9F6] text-[10px] font-bold uppercase tracking-wider flex items-center gap-1 transition-colors"
-                >
-                  <span>Mua tại shop</span>
-                  <ExternalLink className="w-3 h-3" />
-                </a>
+                {p.hasVerifiedUrl === false ? (
+                  <a
+                    href="https://www.google.com/maps/search/?api=1&query=Chun+Sport+61+Truong+Dinh+Bien+Hoa"
+                    target={isMobile ? undefined : "_blank"}
+                    rel="noopener noreferrer"
+                    onClick={handleExternalLinkClick}
+                    className="px-3 py-1.5 min-h-[44px] rounded-lg bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-500/30 text-[10px] font-bold uppercase tracking-wider flex items-center gap-1 transition-colors"
+                  >
+                    <span>Mua tại quầy</span>
+                    <MapPin className="w-3 h-3 text-amber-400" />
+                  </a>
+                ) : (
+                  <a
+                    href={p.url}
+                    target={isMobile ? undefined : "_blank"}
+                    rel="noopener noreferrer"
+                    onClick={handleExternalLinkClick}
+                    className="px-3 py-1.5 min-h-[44px] rounded-lg bg-[#722D4A] hover:bg-[#8E3B5E] text-[#FAF9F6] text-[10px] font-bold uppercase tracking-wider flex items-center gap-1 transition-colors active:scale-95"
+                  >
+                    <span>Mua tại shop</span>
+                    <ExternalLink className="w-3 h-3" />
+                  </a>
+                )}
               </div>
             </div>
           ))}

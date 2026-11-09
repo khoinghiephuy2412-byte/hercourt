@@ -19,6 +19,7 @@ import {
   Store as StoreIcon,
   CheckCircle2,
 } from "lucide-react";
+import { useIsMobile, handleExternalLinkClick } from "@/lib/useMobileDevice";
 
 interface StoreLocatorProps {
   onSelectStoreForGrid?: (storeShortName: string) => void;
@@ -29,6 +30,7 @@ export const StoreLocator: React.FC<StoreLocatorProps> = ({
   onSelectStoreForGrid,
   onQuickViewProduct,
 }) => {
+  const isMobile = useIsMobile();
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [activeFilter, setActiveFilter] = useState<string>("all");
   const [selectedStoreModal, setSelectedStoreModal] = useState<Store | null>(null);
@@ -379,9 +381,10 @@ export const StoreLocator: React.FC<StoreLocatorProps> = ({
                       <div className="grid grid-cols-2 gap-2">
                         <a
                           href={store.website}
-                          target="_blank"
+                          target={isMobile ? undefined : "_blank"}
                           rel="noopener noreferrer"
-                          className="py-2 px-3 rounded-xl bg-[#11151B] hover:bg-[#2B3441] border border-[#2B3441] text-[#FAF9F6] text-[11px] font-bold uppercase tracking-wider text-center transition-colors flex items-center justify-center gap-1"
+                          onClick={handleExternalLinkClick}
+                          className="py-2.5 px-3 min-h-[44px] rounded-xl bg-[#11151B] hover:bg-[#2B3441] border border-[#2B3441] text-[#FAF9F6] text-[11px] font-bold uppercase tracking-wider text-center transition-colors flex items-center justify-center gap-1 active:scale-95"
                         >
                           <span>Xem Shop</span>
                           <ExternalLink className="w-3 h-3 text-[#FAF9F6]/60" />
@@ -389,9 +392,10 @@ export const StoreLocator: React.FC<StoreLocatorProps> = ({
 
                         <a
                           href={store.mapsUrl}
-                          target="_blank"
+                          target={isMobile ? undefined : "_blank"}
                           rel="noopener noreferrer"
-                          className="py-2 px-3 rounded-xl bg-[#722D4A]/50 hover:bg-[#722D4A] border border-[#E8A9C3]/30 text-[#FAF9F6] text-[11px] font-bold uppercase tracking-wider text-center transition-colors flex items-center justify-center gap-1"
+                          onClick={handleExternalLinkClick}
+                          className="py-2.5 px-3 min-h-[44px] rounded-xl bg-[#722D4A]/50 hover:bg-[#722D4A] border border-[#E8A9C3]/30 text-[#FAF9F6] text-[11px] font-bold uppercase tracking-wider text-center transition-colors flex items-center justify-center gap-1 active:scale-95"
                         >
                           <span>Chỉ Đường</span>
                           <Navigation className="w-3 h-3 text-[#D9FF3F]" />
@@ -518,9 +522,10 @@ export const StoreLocator: React.FC<StoreLocatorProps> = ({
 
                 <a
                   href={selectedStoreModal.mapsUrl}
-                  target="_blank"
+                  target={isMobile ? undefined : "_blank"}
                   rel="noopener noreferrer"
-                  className="px-3 py-1.5 rounded-lg bg-[#11151B] hover:bg-[#2B3441] text-[#FAF9F6] text-xs font-bold uppercase tracking-wider flex items-center gap-1 border border-[#2B3441]"
+                  onClick={handleExternalLinkClick}
+                  className="px-3 py-1.5 min-h-[44px] rounded-lg bg-[#11151B] hover:bg-[#2B3441] text-[#FAF9F6] text-xs font-bold uppercase tracking-wider flex items-center gap-1 border border-[#2B3441] active:scale-95"
                 >
                   <Navigation className="w-3 h-3 text-[#D9FF3F]" />
                   <span>Chỉ đường</span>
@@ -609,15 +614,29 @@ export const StoreLocator: React.FC<StoreLocatorProps> = ({
                         >
                           Chi tiết
                         </button>
-                        <a
-                          href={p.url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-[10px] font-bold uppercase px-2 py-1 rounded bg-[#11151B] hover:bg-[#2B3441] border border-[#2B3441] text-[#FAF9F6] flex items-center gap-1"
-                        >
-                          <span>Mua shop</span>
-                          <ExternalLink className="w-2.5 h-2.5" />
-                        </a>
+                        {p.hasVerifiedUrl === false ? (
+                          <a
+                            href={selectedStoreModal.mapsUrl}
+                            target={isMobile ? undefined : "_blank"}
+                            rel="noopener noreferrer"
+                            onClick={handleExternalLinkClick}
+                            className="text-[10px] font-bold uppercase px-2.5 py-1.5 min-h-[44px] rounded bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-500/30 flex items-center gap-1 active:scale-95"
+                          >
+                            <span>Tại quầy</span>
+                            <MapPin className="w-2.5 h-2.5 text-amber-400" />
+                          </a>
+                        ) : (
+                          <a
+                            href={p.url}
+                            target={isMobile ? undefined : "_blank"}
+                            rel="noopener noreferrer"
+                            onClick={handleExternalLinkClick}
+                            className="text-[10px] font-bold uppercase px-2.5 py-1.5 min-h-[44px] rounded bg-[#11151B] hover:bg-[#2B3441] border border-[#2B3441] text-[#FAF9F6] flex items-center gap-1 active:scale-95"
+                          >
+                            <span>Mua shop</span>
+                            <ExternalLink className="w-2.5 h-2.5" />
+                          </a>
+                        )}
                       </div>
                     </div>
                   ))}

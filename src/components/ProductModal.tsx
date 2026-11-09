@@ -15,7 +15,12 @@ import {
   TrendingDown,
   Trophy,
   Sparkles,
+  Copy,
+  Check,
+  Phone,
+  AlertCircle,
 } from "lucide-react";
+import { useIsMobile, handleExternalLinkClick } from "@/lib/useMobileDevice";
 
 interface ProductModalProps {
   product: Product | null;
@@ -30,11 +35,13 @@ export const ProductModal: React.FC<ProductModalProps> = ({
   isFavorite,
   onToggleFavorite,
 }) => {
+  const isMobile = useIsMobile();
   const [prevProductId, setPrevProductId] = useState<string | null>(null);
   const [imageError, setImageError] = useState(false);
   const [imageLoaded, setImageLoaded] = useState(false);
   const [selectedSize, setSelectedSize] = useState<string>("");
   const [selectedColor, setSelectedColor] = useState<string>("");
+  const [copied, setCopied] = useState(false);
   const hasAiModel = Boolean(product?.aiModelImageUrl);
   const [viewAiModel, setViewAiModel] = useState<boolean>(false);
 
@@ -65,9 +72,45 @@ export const ProductModal: React.FC<ProductModalProps> = ({
     setPrevProductId(product.id);
     setImageError(false);
     setImageLoaded(false);
+    setCopied(false);
     setSelectedSize(product.variants?.[0]?.size || "M");
     setSelectedColor(product.variants?.[0]?.color || "Tiêu chuẩn");
   }
+
+  const fallbackCopy = (text: string) => {
+    try {
+      const textArea = document.createElement("textarea");
+      textArea.value = text;
+      textArea.style.position = "fixed";
+      textArea.style.left = "-9999px";
+      document.body.appendChild(textArea);
+      textArea.focus();
+      textArea.select();
+      document.execCommand("copy");
+      document.body.removeChild(textArea);
+    } catch {
+      // ignore
+    }
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2500);
+  };
+
+  const handleCopyLink = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (!product) return;
+    const urlToCopy = product.url;
+    try {
+      if (typeof navigator !== "undefined" && navigator.clipboard && navigator.clipboard.writeText) {
+        await navigator.clipboard.writeText(urlToCopy);
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2500);
+      } else {
+        fallbackCopy(urlToCopy);
+      }
+    } catch {
+      fallbackCopy(urlToCopy);
+    }
+  };
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -371,29 +414,103 @@ export const ProductModal: React.FC<ProductModalProps> = ({
             </div>
 
             {/* Bottom Actions */}
-            <div className="pt-4 border-t border-[#2B3441] flex items-center gap-3">
-              <button
-                onClick={() => onToggleFavorite(product.id)}
-                className={`p-3 rounded-2xl border transition-colors flex items-center justify-center ${
-                  isFavorite
-                    ? "bg-[#722D4A] border-[#E8A9C3] text-[#FAF9F6]"
-                    : "bg-[#11151B] border-[#2B3441] text-[#FAF9F6]/70 hover:text-white"
-                }`}
-                aria-label="Yêu thích"
-              >
-                <Heart className={`w-5 h-5 ${isFavorite ? "fill-white text-white" : ""}`} />
-              </button>
+            {product.hasVerifiedUrl === false ? (
+              <div className="pt-4 border-t border-[#2B3441] space-y-3">
+                <div className="p-3 rounded-xl bg-amber-500/15 border border-amber-500/30 text-amber-200 text-xs flex items-start gap-2.5">
+                  <AlertCircle className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
+                  <div className="space-y-0.5">
+                    <div className="font-bold text-amber-300">Chưa xác minh link sản phẩm trực tuyến</div>
+                    <p className="text-[11px] text-amber-200/80 leading-relaxed">
+                      Website của Chun Sport đang bảo trì. Quý khách vui lòng ghé trực tiếp quầy hàng tại 61 Trương Định, Biên Hòa hoặc gọi hotline để tư vấn chọn size sẵn có.
+                    </p>
+                  </div>
+                </div>
 
-              <a
-                href={product.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex-1 py-3 px-6 rounded-2xl bg-[#D9FF3F] hover:bg-[#BBE02E] text-[#11151B] font-black text-xs uppercase tracking-wider text-center transition-all flex items-center justify-center gap-2 shadow-lg shadow-[#D9FF3F]/20"
-              >
-                <span>Xem và mua tại {product.store}</span>
-                <ExternalLink className="w-4 h-4 stroke-[2.5]" />
-              </a>
-            </div>
+                <div className="flex flex-wrap items-center gap-2.5">
+                  <button
+                    onClick={() => onToggleFavorite(product.id)}
+                    className={`p-3 min-h-[48px] rounded-2xl border transition-colors flex items-center justify-center shrink-0 ${
+                      isFavorite
+                        ? "bg-[#722D4A] border-[#E8A9C3] text-[#FAF9F6]"
+                        : "bg-[#11151B] border-[#2B3441] text-[#FAF9F6]/70 hover:text-white"
+                    }`}
+                    aria-label="Yêu thích"
+                  >
+                    <Heart className={`w-5 h-5 ${isFavorite ? "fill-white text-white" : ""}`} />
+                  </button>
+
+                  <a
+                    href="https://www.google.com/maps/search/?api=1&query=Chun+Sport+61+Truong+Dinh+Bien+Hoa"
+                    target={isMobile ? undefined : "_blank"}
+                    rel="noopener noreferrer"
+                    onClick={handleExternalLinkClick}
+                    className="flex-1 py-3 px-4 min-h-[48px] rounded-2xl bg-amber-400 hover:bg-amber-300 text-[#11151B] font-bold text-xs uppercase tracking-wider text-center transition-all flex items-center justify-center gap-2 shadow-lg"
+                  >
+                    <MapPin className="w-4 h-4" />
+                    <span>Chỉ đường đến shop (Google Maps)</span>
+                  </a>
+
+                  <a
+                    href="tel:0979123789"
+                    className="py-3 px-4 min-h-[48px] rounded-2xl bg-[#11151B] hover:bg-[#2B3441] border border-[#2B3441] text-[#FAF9F6] text-xs font-semibold flex items-center justify-center gap-1.5 transition-all shrink-0"
+                  >
+                    <Phone className="w-4 h-4 text-[#D9FF3F]" />
+                    <span className="hidden sm:inline">Hotline</span>
+                  </a>
+                </div>
+              </div>
+            ) : (
+              <div className="pt-4 border-t border-[#2B3441] space-y-2.5">
+                <div className="flex items-center gap-2.5">
+                  <button
+                    onClick={() => onToggleFavorite(product.id)}
+                    className={`p-3 min-h-[48px] rounded-2xl border transition-colors flex items-center justify-center shrink-0 ${
+                      isFavorite
+                        ? "bg-[#722D4A] border-[#E8A9C3] text-[#FAF9F6]"
+                        : "bg-[#11151B] border-[#2B3441] text-[#FAF9F6]/70 hover:text-white"
+                    }`}
+                    aria-label="Yêu thích"
+                  >
+                    <Heart className={`w-5 h-5 ${isFavorite ? "fill-white text-white" : ""}`} />
+                  </button>
+
+                  <a
+                    href={product.url}
+                    target={isMobile ? undefined : "_blank"}
+                    rel="noopener noreferrer"
+                    onClick={handleExternalLinkClick}
+                    className="flex-1 py-3 px-5 min-h-[48px] rounded-2xl bg-[#D9FF3F] hover:bg-[#BBE02E] text-[#11151B] font-black text-xs uppercase tracking-wider text-center transition-all flex items-center justify-center gap-2 shadow-lg shadow-[#D9FF3F]/20 active:scale-98"
+                  >
+                    <span>Xem và mua tại {product.store}</span>
+                    <ExternalLink className="w-4 h-4 stroke-[2.5]" />
+                  </a>
+
+                  <button
+                    type="button"
+                    onClick={handleCopyLink}
+                    className="py-3 px-3.5 min-h-[48px] rounded-2xl bg-[#11151B] hover:bg-[#2B3441] border border-[#2B3441] text-[#FAF9F6] text-xs font-semibold flex items-center justify-center gap-1.5 transition-all shrink-0 active:scale-95"
+                    title="Sao chép link sản phẩm để mở trong Safari hoặc Zalo/Facebook"
+                  >
+                    {copied ? (
+                      <>
+                        <Check className="w-4 h-4 text-[#D9FF3F]" />
+                        <span className="text-[#D9FF3F] font-bold text-[11px]">Đã chép!</span>
+                      </>
+                    ) : (
+                      <>
+                        <Copy className="w-4 h-4 text-[#FAF9F6]/70" />
+                        <span className="text-[#FAF9F6]/80 text-[11px] font-medium">Sao chép</span>
+                      </>
+                    )}
+                  </button>
+                </div>
+
+                <p className="text-[11px] text-[#FAF9F6]/50 text-center flex items-center justify-center gap-1.5 pt-0.5">
+                  <span>💡</span>
+                  <span>Mẹo iPhone: Nếu mở trong Zalo hoặc Facebook, bạn có thể sao chép link và dán vào Safari để mua sắm thuận tiện nhất.</span>
+                </p>
+              </div>
+            )}
 
           </div>
 

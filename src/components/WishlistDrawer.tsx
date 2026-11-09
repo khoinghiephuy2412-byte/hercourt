@@ -3,7 +3,8 @@
 import React from "react";
 import { Product, PRODUCTS, formatVND } from "@/lib/data";
 import { GarmentVisual } from "./GarmentVisual";
-import { X, Heart, ExternalLink, Trash2, ArrowRight } from "lucide-react";
+import { X, Heart, ExternalLink, Trash2, ArrowRight, MapPin } from "lucide-react";
+import { useIsMobile, handleExternalLinkClick } from "@/lib/useMobileDevice";
 
 interface WishlistDrawerProps {
   isOpen: boolean;
@@ -20,6 +21,7 @@ export const WishlistDrawer: React.FC<WishlistDrawerProps> = ({
   onRemove,
   onQuickView,
 }) => {
+  const isMobile = useIsMobile();
   React.useEffect(() => {
     if (!isOpen) return;
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -103,21 +105,35 @@ export const WishlistDrawer: React.FC<WishlistDrawerProps> = ({
                   </div>
 
                   <div className="flex flex-col gap-2 shrink-0">
-                    <a
-                      href={p.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="p-2 rounded-lg bg-[#722D4A] hover:bg-[#8E3B5E] text-[#FAF9F6] transition-colors"
-                      title="Xem tại shop"
-                    >
-                      <ExternalLink className="w-3.5 h-3.5" />
-                    </a>
+                    {p.hasVerifiedUrl === false ? (
+                      <a
+                        href="https://www.google.com/maps/search/?api=1&query=Chun+Sport+61+Truong+Dinh+Bien+Hoa"
+                        target={isMobile ? undefined : "_blank"}
+                        rel="noopener noreferrer"
+                        onClick={handleExternalLinkClick}
+                        className="p-2.5 min-h-[44px] min-w-[44px] flex items-center justify-center rounded-lg bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-500/30 transition-colors"
+                        title="Đến mua tại quầy Chun Sport (Google Maps)"
+                      >
+                        <MapPin className="w-4 h-4 text-amber-400" />
+                      </a>
+                    ) : (
+                      <a
+                        href={p.url}
+                        target={isMobile ? undefined : "_blank"}
+                        rel="noopener noreferrer"
+                        onClick={handleExternalLinkClick}
+                        className="p-2.5 min-h-[44px] min-w-[44px] flex items-center justify-center rounded-lg bg-[#722D4A] hover:bg-[#8E3B5E] text-[#FAF9F6] transition-colors active:scale-95"
+                        title="Xem tại shop"
+                      >
+                        <ExternalLink className="w-4 h-4" />
+                      </a>
+                    )}
                     <button
                       onClick={() => onRemove(p.id)}
-                      className="p-2 rounded-lg bg-[#181D25] hover:bg-[#2B3441] text-[#FAF9F6]/50 hover:text-red-400 transition-colors"
+                      className="p-2.5 min-h-[44px] min-w-[44px] flex items-center justify-center rounded-lg bg-[#181D25] hover:bg-[#2B3441] text-[#FAF9F6]/50 hover:text-red-400 transition-colors"
                       title="Xóa khỏi danh sách"
                     >
-                      <Trash2 className="w-3.5 h-3.5" />
+                      <Trash2 className="w-4 h-4" />
                     </button>
                   </div>
                 </div>
