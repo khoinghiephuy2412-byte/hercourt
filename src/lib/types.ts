@@ -77,6 +77,25 @@ export interface Product {
   branchAvailability?: string[];
   lastCheckedTimestamp?: string;
   confidenceScore?: number; // 0 - 100
+
+  // Enhanced audit & structured schema fields (Priority 4)
+  productId?: string;
+  retailerId?: string;
+  productName?: string;
+  sku?: string;
+  gender?: 'Nữ' | 'Unisex';
+  variantDesc?: string;
+  currentPrice?: number;
+  priceType?: 'sale' | 'regular' | 'member';
+  currency?: 'VND';
+  productUrl?: string;
+  canonicalUrl?: string;
+  imageUsagePermission?: string;
+  sourceUrl?: string;
+  lastVerifiedAt?: string;
+  localAvailabilityScope?: VerificationScope;
+  syncStatus?: ProductStatus;
+  verificationNotes?: string;
 }
 
 export interface StoreBranch {

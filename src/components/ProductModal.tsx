@@ -320,7 +320,7 @@ export const ProductModal: React.FC<ProductModalProps> = ({
                 rel="noopener noreferrer"
                 className="flex-1 py-3 px-6 rounded-2xl bg-[#D9FF3F] hover:bg-[#BBE02E] text-[#11151B] font-black text-xs uppercase tracking-wider text-center transition-all flex items-center justify-center gap-2 shadow-lg shadow-[#D9FF3F]/20"
               >
-                <span>Xem & Đặt Mua Tại {product.store}</span>
+                <span>Xem và mua tại {product.store}</span>
                 <ExternalLink className="w-4 h-4 stroke-[2.5]" />
               </a>
             </div>

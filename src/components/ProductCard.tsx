@@ -195,7 +195,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
             rel="noopener noreferrer"
             className="w-full py-2.5 px-3 rounded-xl bg-[#2B3441]/60 hover:bg-[#722D4A] text-[#FAF9F6] text-[11px] sm:text-xs font-bold uppercase tracking-wider text-center transition-all duration-200 flex items-center justify-center gap-1.5 group/btn"
           >
-            <span>Mua tại {product.store}</span>
+            <span>Xem và mua tại shop</span>
             <ExternalLink className="w-3.5 h-3.5 group-hover/btn:translate-x-0.5 group-hover/btn:-translate-y-0.5 transition-transform" />
           </a>
         </div>
