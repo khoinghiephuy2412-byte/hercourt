@@ -24,9 +24,8 @@ export const ProductCard: React.FC<ProductCardProps> = ({
   const [imageError, setImageError] = useState(false);
   const [imageLoaded, setImageLoaded] = useState(false);
   const hasAiModel = Boolean(product.aiModelImageUrl);
-  const [viewAiModel, setViewAiModel] = useState(
-    product.photoSourceType === "ai_styling_visualization" && hasAiModel
-  );
+  // Garment-locked principle: The authentic retailer photo is ALWAYS primary on load
+  const [viewAiModel, setViewAiModel] = useState<boolean>(false);
 
   const currentImage = viewAiModel && product.aiModelImageUrl
     ? product.aiModelImageUrl
@@ -37,8 +36,16 @@ export const ProductCard: React.FC<ProductCardProps> = ({
       
       {/* Top Media & Visual Area */}
       <div
-        className="relative aspect-square w-full bg-[#151921] flex items-center justify-center p-3 overflow-hidden cursor-pointer"
-        onClick={() => onQuickView(product)}
+        className="relative aspect-square w-full bg-[#151921] flex items-center justify-center p-3 overflow-hidden cursor-pointer select-none"
+        onClick={(e) => {
+          if (hasAiModel && product.imageUrl && isMobile) {
+            // Mobile tap toggles between original shop photo and AI styling
+            setViewAiModel(!viewAiModel);
+            setImageLoaded(false);
+          } else {
+            onQuickView(product);
+          }
+        }}
       >
         {/* Subtle radial glow matching garment color */}
         <div
@@ -47,7 +54,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         />
 
         {/* Badges in top-left */}
-        <div className="absolute top-3 left-3 z-10 flex flex-col gap-1 items-start">
+        <div className="absolute top-3 left-3 z-10 flex flex-col gap-1 items-start max-w-[70%]">
           {product.badge && (
             <span className="text-[10px] font-black uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-[#11151B]/90 text-[#FAF9F6] border border-[#2B3441] shadow-sm">
               {product.badge}
@@ -57,15 +64,15 @@ export const ProductCard: React.FC<ProductCardProps> = ({
             <Trophy className="w-2.5 h-2.5" />
             <span>{product.sport}</span>
           </span>
-          {viewAiModel || product.photoSourceType === "ai_styling_visualization" ? (
-            <span className="text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md bg-purple-950/90 text-[#FAF9F6] border border-purple-400/40 flex items-center gap-1 shadow-sm">
-              <Sparkles className="w-2.5 h-2.5 text-[#D9FF3F]" />
-              <span>Ảnh phối mẫu AI</span>
+          {viewAiModel ? (
+            <span className="text-[9px] font-bold tracking-tight px-2 py-0.5 rounded-md bg-purple-950/95 text-[#FAF9F6] border border-purple-400/40 flex items-center gap-1 shadow-sm animate-in fade-in duration-200">
+              <Sparkles className="w-2.5 h-2.5 text-[#D9FF3F] shrink-0" />
+              <span className="truncate">Ảnh phối mẫu AI — sản phẩm tham khảo ảnh gốc</span>
             </span>
           ) : product.isRealPhoto && !imageError && imageLoaded ? (
             <span className="text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md bg-[#722D4A]/90 text-[#FAF9F6] border border-[#E8A9C3]/30 flex items-center gap-1 shadow-sm">
               <Camera className="w-2.5 h-2.5 text-[#D9FF3F]" />
-              <span>Ảnh thật từ shop</span>
+              <span>Ảnh thật từ shop (Chính)</span>
             </span>
           ) : (
             <span className="text-[9px] font-medium uppercase tracking-wider px-2 py-0.5 rounded-md bg-[#1B222D]/90 text-[#FAF9F6]/70 border border-[#2B3441] flex items-center gap-1 shadow-sm">
@@ -78,12 +85,13 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         {/* Dual-View Switcher: Shop Photo vs AI Model Styling */}
         {hasAiModel && product.imageUrl && product.imageUrl !== product.aiModelImageUrl && (
           <div
-            className="absolute top-3 right-12 z-20 flex items-center rounded-lg bg-[#11151B]/90 border border-[#2B3441] p-0.5 text-[9px] font-bold shadow-md"
+            className="absolute top-3 right-12 z-20 flex items-center rounded-lg bg-[#11151B]/95 border border-[#2B3441] p-0.5 text-[9px] font-bold shadow-md"
             onClick={(e) => e.stopPropagation()}
           >
             <button
               type="button"
-              onClick={() => {
+              onClick={(e) => {
+                e.stopPropagation();
                 setViewAiModel(false);
                 setImageLoaded(false);
               }}
@@ -92,13 +100,14 @@ export const ProductCard: React.FC<ProductCardProps> = ({
                   ? "bg-[#722D4A] text-white"
                   : "text-gray-400 hover:text-white"
               }`}
-              title="Xem ảnh thực tế từ shop"
+              title="Xem ảnh thật từ shop (Ảnh chính)"
             >
               Shop
             </button>
             <button
               type="button"
-              onClick={() => {
+              onClick={(e) => {
+                e.stopPropagation();
                 setViewAiModel(true);
                 setImageLoaded(false);
               }}
@@ -107,7 +116,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
                   ? "bg-purple-700 text-white"
                   : "text-gray-400 hover:text-white"
               }`}
-              title="Xem ảnh phối mẫu AI"
+              title="Xem ảnh phối mẫu AI (tham khảo ảnh gốc)"
             >
               Mẫu AI
             </button>
