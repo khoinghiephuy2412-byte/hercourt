@@ -1,29 +1,37 @@
 ---
 name: hercourt-virtual-tryon
-description: Completely free, open-source garment-preserving virtual try-on workflow for HERCOURT women's badminton fashion. Uses Leffa (MIT, CVPR 2025), IDM-VTON, and FASHN-VTON 1.5 without paid APIs.
+description: Free, open-source garment-preserving virtual try-on workflow for HERCOURT women's badminton apparel. Specializes in upper body badminton shirts, skorts, and dresses using Leffa (MIT License, CVPR 2025), IDM-VTON, and garment-locked composition. Activates when generating, testing, or auditing AI female model imagery while strictly preserving retailer garment fidelity.
 allowed-tools: Bash, Read, Write, Edit
 ---
 
 # HERCOURT — Free Open-Source Virtual Try-On Pipeline
 
-This skill provides a standardized, zero-cost virtual try-on workflow specifically engineered for women's badminton sportswear (badminton shirts, pleated skorts, performance dresses). It ensures 100% garment design preservation from official retailer photographs without paying for external AI subscriptions.
+A standardized, zero-cost virtual try-on workflow specifically engineered for women's badminton sportswear (badminton shirts, pleated skorts, performance dresses). Built in accordance with Anthropic Skill Creator and WebApp Testing principles, it ensures 100% garment design preservation from official retailer photographs without paid AI subscriptions.
 
-## 1. Input Image Preparation & Verification
+## 1. Trigger Conditions & Purpose
 
-Before running virtual try-on, two reference inputs must be prepared:
+### When to Use:
+- Generating, evaluating, or fixing AI female model try-on imagery for women's badminton products.
+- Validating that newly published products have authentic retailer photos paired with accurate AI athlete previews.
+- Auditing existing try-on assets for garment preservation (collar, shoulder stripes, color fidelity, brand logos).
 
-### A. Authentic Retailer Garment Photo
-- **Source of truth:** Must be an authorized retailer photograph from ShopVNB, XB Sports, BEYONO, or Phượng Sport.
-- **Verification:** Check `src/lib/garmentReferenceAudit.json` to verify collar shape, sleeve construction, color distribution, logo placement, and woven tags.
-- **Prohibition:** Never use AI text-to-image to generate a surrogate shirt. If no physical photograph exists (e.g. Chun Sport `p34`), **reject try-on and withhold from public view**.
-
-### B. Female Badminton Model Image
-- **Pose requirements:** Front-facing or subtle 15° 3/4 turn, upright athletic posture, arms resting at sides or holding a badminton racket cleanly without occluding the chest/torso.
-- **Reference models:** Use verified athlete base poses (`lia-mobile.jpg` or `ai_model_p19_taro_green.jpg`).
+### When NOT to Use:
+- Non-badminton sportswear or generic fashion items without verified retailer photographs.
+- Generating surrogate or synthetic replacement garments. If no authentic physical photograph exists, do NOT run virtual try-on.
 
 ---
 
-## 2. Garment Preprocessing & Upright Alignment
+## 2. Input Specifications & Preconditions
+
+| Input | Requirement | Verification Method |
+| :--- | :--- | :--- |
+| **Authentic Garment** | Flat-lay or mannequin photo from authorized shop (ShopVNB, XB Sports, BEYONO). | Inspect `imageUrl` in `src/lib/data.ts` and verify image file exists. |
+| **Model Reference** | Front-facing or 15° athletic stance, arms clear of chest/torso, holding badminton racket cleanly. | Use verified reference assets (`lia-hero.jpg` or approved athlete poses). |
+| **Output Path** | Standardized naming: `public/images/products/ai-model-{id}-{slug}.jpg`. | Target must be within `public/images/products/` and synced to `out/`. |
+
+---
+
+## 3. Garment Preprocessing & Upright Alignment
 
 Store photos are frequently shot flat-lay at diagonal angles on tiled floors. Feeding tilted images into neural try-on networks causes severe warping and sleeve asymmetry.
 
@@ -33,7 +41,7 @@ Preprocess before inference:
 3. **Aspect Ratio:** Keep the bounding box centered with a 3:4 aspect ratio.
 
 ```bash
-# Example preprocessing invocation built into tryon_worker.py:
+# Automated preprocessing via CLI worker:
 python3 .agents/skills/hercourt-virtual-tryon/scripts/tryon_worker.py \
   --garment public/images/products/p19-vnb-taro-tr024-xanh-luc.webp \
   --rotate -38 \
@@ -43,94 +51,74 @@ python3 .agents/skills/hercourt-virtual-tryon/scripts/tryon_worker.py \
 
 ---
 
-## 3. Supported Open-Source Models & Hardware Constraints
+## 4. Execution Workflow & Inference Backends
 
-### Hardware Inspection Summary (macOS Intel Core i5 x86_64, 16GB RAM)
-- **Architecture:** Intel x86_64 (No NVIDIA CUDA GPU; No Apple Silicon MPS Neural Engine).
-- **Execution Strategy:** Use Gradio Client to interface directly with official open-source GPU-backed spaces (`franciszzj/Leffa`, `yisol/IDM-VTON`, `fashn-ai/fashn-vton-1.5`).
+CLI Worker Script: `.agents/skills/hercourt-virtual-tryon/scripts/tryon_worker.py`
 
 ### Supported Backends:
+1. **Leffa (`franciszzj/Leffa`, MIT License, CVPR 2025):**
+   - High-fidelity flow-field warping for upper body (`viton_hd`) and dresses/bottoms (`dress_code`).
+   - Requires boolean parameters for `ref_acceleration` and `vt_repaint`.
+2. **IDM-VTON (`yisol/IDM-VTON`):**
+   - Exceptional micro-detail preservation for badges, collar trims, and chest emblems.
+3. **FASHN VTON 1.5 (`fashn-ai/fashn-vton-1.5`):**
+   - Maskless pixel-space MMDiT diffusion try-on.
 
-| Model | Repository | License | Specialization |
-| :--- | :--- | :--- | :--- |
-| **Leffa** *(Primary)* | `franciszzj/Leffa` | **MIT License** (CVPR 2025) | Flow-field attention, handles both tops (`viton_hd`) and bottoms/dresses (`dress_code`). |
-| **IDM-VTON** | `yisol/IDM-VTON` | Research / Open Demo | Exceptional micro-detail preservation (text, fine lines, woven tags). |
-| **FASHN VTON 1.5** | `fashn-ai/fashn-vton-1.5` | Open-source weights | Maskless pixel-space MMDiT diffusion try-on. |
-
----
-
-## 4. Local Execution Commands
-
-The CLI adapter is located at:
-`scripts/tryon_worker.py`
-
-### Basic Inference Command (Leffa):
+### Inference Invocations:
 ```bash
+# Standard Leffa upper-body try-on:
 python3 .agents/skills/hercourt-virtual-tryon/scripts/tryon_worker.py \
   --backend leffa \
-  --person public/images/lia-mobile.jpg \
-  --garment public/images/products/p19-clean.jpg \
+  --person public/images/lia-hero.jpg \
+  --garment public/images/products/p30-xb-yonex-trm3488-aqua.webp \
   --category upper_body \
-  --output public/images/products/ai-model-p19-taro-green.jpg
-```
+  --output public/images/products/ai-model-p30-yonex-aqua.jpg
 
-### High-Detail Inference Command (IDM-VTON):
-```bash
-python3 .agents/skills/hercourt-virtual-tryon/scripts/tryon_worker.py \
-  --backend idm-vton \
-  --person public/images/lia-mobile.jpg \
-  --garment public/images/products/p20-clean.jpg \
-  --desc "women red and yellow badminton sport shirt with collar" \
-  --output public/images/products/ai-model-p20-kamito-red.jpg
-```
-
-### With Hugging Face Access Token (Bypasses Free Anonymous IP Limits):
-```bash
+# With Hugging Face Access Token (bypasses anonymous IP ZeroGPU quota):
 export HF_TOKEN="hf_xxxxxxxxxxxxxxxxxxxx"
 python3 .agents/skills/hercourt-virtual-tryon/scripts/tryon_worker.py \
   --backend leffa \
-  --person public/images/lia-mobile.jpg \
-  --garment public/images/products/p21-clean.jpg \
-  --category upper_body \
-  --output public/images/products/ai-model-p21-victec-white.jpg
+  --person public/images/lia-hero.jpg \
+  --garment public/images/products/p30-xb-yonex-trm3488-aqua.webp \
+  --hf-token $HF_TOKEN \
+  --output public/images/products/ai-model-p30-yonex-aqua.jpg
 ```
 
 ---
 
-## 5. Quality Gate: Detail Comparison & Approval Rules
+## 5. Quality Gate: 8-Point Visual Audit & Automated Verification
 
-Every output image must pass an 8-point visual audit before publication:
+Every generated image MUST pass all 8 quality criteria before being marked `approved`:
 
-1. **Neckline / Collar:** Does the neckline match the original? (Crew neck must stay crew neck; polo must stay polo).
-2. **Sleeve Length & Color:** Are sleeves symmetric and true to original coloring (e.g. asymmetrical sleeves must retain contrasting colors)?
-3. **Primary Colors:** Do the hex tones match the physical retailer photograph?
-4. **Graphic Lines & Banners:** Are diagonal sashes, speed lines, or chevron patterns preserved without AI-blurring?
-5. **Brand Logo:** Is the original brand emblem (Taro, Kamito, Victor, Yonex) legible and in the correct chest location?
-6. **No Phantom Elements:** Ensure no invented buttons, fictional sponsor text (e.g. "AERO"), or imaginary patterns exist.
-7. **Athlete Anatomy:** Natural fingers, posture, and badminton racket grip.
-8. **No Primary Overwrite:** The official retailer photograph must ALWAYS remain primary (`viewAiModel = false`).
+1. **Neckline / Collar Shape:** Crew neck must remain crew neck; polo must remain polo; contrasting ribbing must be intact.
+2. **Shoulder / Sleeve Trim:** Sleeve bands, raglan cuts, and contrast piping must match the original.
+3. **Primary Color Fidelity:** Garment body color must match the original hex code (e.g. `#4db6ac` for Yonex TRM3488).
+4. **Graphic Lines & Motifs:** Diagonal bands, speed streaks, and geometric patterns must be preserved without blur or hallucination.
+5. **Brand Logo & Position:** Legible, unaltered logo in the correct chest location (e.g. black Yonex double-triangle on left chest).
+6. **No Phantom Elements:** Absolutely NO added buttons, fictional text (e.g. "AERO"), or imaginary patterns.
+7. **Athlete Realism:** Anatomically natural fingers, realistic stance, appropriate athletic badminton skirt and footwear.
+8. **Frontend Coexistence:** The authentic retailer photo is ALWAYS primary; the AI model image is displayed as a clearly labeled secondary view ("Người mẫu AI minh họa").
 
 ### Rule of Rejection:
-If any of criteria 1–6 fail, the image is **REJECTED**.
-- Attempt 1: Re-align and crop garment closer to borders.
-- Attempt 2: Switch to alternative backend (Leffa ↔ IDM-VTON).
-- Attempt 3: If try-on still distorts the design, **withhold AI view completely** and display only the authentic retailer photograph.
+If ANY of criteria 1–6 fail, the image is **REJECTED**.
+- Attempt 1: Re-crop and rotate garment to perfect vertical alignment.
+- Attempt 2: Switch backend (Leffa ↔ IDM-VTON).
+- Attempt 3: If inference remains distorted or blocked, **withhold AI view completely** and display only the authentic retailer photograph.
 
 ---
 
-## 6. Error Recovery
+## 6. End-to-End Testing via WebApp Testing Skill
 
-- **ZeroGPU Quota Exceeded:** Occurs when calling public spaces without authentication.
-  - *Fix:* Obtain a free Hugging Face User Access Token at `https://huggingface.co/settings/tokens` and pass `--hf-token $HF_TOKEN`.
-- **Garment Warping / Distortion:**
-  - *Fix:* Check rotation angle. Garments tilted >15° on floors must be rotated with `--rotate <degrees>` before passing to neural try-on.
-- **Occluded Torso Error:**
-  - *Fix:* Ensure the model's arms or racket do not cross directly over the chest.
+In accordance with `.agents/skills/webapp-testing/`:
+1. Start local server: `npx serve -l 3000 out`.
+2. Inspect browser rendering at Desktop (`1440 × 900`) and Mobile (`390 × 844`).
+3. Assert that both `p.imageUrl` ("Ảnh sản phẩm gốc") and `p.aiModelImageUrl` ("Người mẫu AI minh họa") load with HTTP 200 and `naturalWidth > 0`.
+4. Capture screenshots for automated regression detection.
 
 ---
 
-## 7. License & Commercial Use Notice
+## 7. License & Compliance Guidelines
 
-- **franciszzj/Leffa:** Code and weights are released under the **MIT License**. Permissive for commercial and private use. Note that underlying training datasets (VITON-HD, DressCode) are academic.
-- **yisol/IDM-VTON:** Demo and research checkpoints are intended for non-commercial exploration and evaluation unless commercial licensing is secured.
-- **Editorial Policy:** HERCOURT displays AI styling strictly as an optional informational preview ("Ảnh người mẫu AI minh họa") to help female customers visualize garment drape. All purchase links lead directly to official local retailers.
+- **franciszzj/Leffa:** MIT License. Commercial and educational use permitted.
+- **Retailer Integrity:** All images attribute local merchants (XB Sports, ShopVNB) and provide direct one-tap links to the original purchase page.
+- **Consumer Transparency:** AI model imagery is strictly labeled as informational draping visualization ("Ảnh người mẫu AI minh họa") to aid size and style selection.
