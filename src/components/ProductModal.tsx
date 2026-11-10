@@ -251,7 +251,7 @@ export const ProductModal: React.FC<ProductModalProps> = ({
                         : "text-gray-400 hover:text-white"
                     }`}
                   >
-                    Ảnh shop
+                    Ảnh sản phẩm gốc
                   </button>
                   <button
                     type="button"
@@ -265,7 +265,7 @@ export const ProductModal: React.FC<ProductModalProps> = ({
                         : "text-gray-400 hover:text-white"
                     }`}
                   >
-                    Mẫu AI minh họa
+                    Người mẫu AI minh họa
                   </button>
                 </div>
               )}
@@ -290,8 +290,8 @@ export const ProductModal: React.FC<ProductModalProps> = ({
                     <Image src={product.imageUrl} alt="Ảnh thật" fill className="object-cover" />
                   </div>
                   <div className="min-w-0">
-                    <div className="text-[10px] font-bold uppercase truncate">Ảnh thật từ shop</div>
-                    <div className="text-[9px] text-[#D9FF3F] font-mono">Chính hãng (Ưu tiên)</div>
+                    <div className="text-[10px] font-bold uppercase truncate">Ảnh sản phẩm gốc</div>
+                    <div className="text-[9px] text-[#D9FF3F] font-mono">XB Sports (Chính hãng)</div>
                   </div>
                 </button>
 
@@ -313,8 +313,8 @@ export const ProductModal: React.FC<ProductModalProps> = ({
                     )}
                   </div>
                   <div className="min-w-0">
-                    <div className="text-[10px] font-bold uppercase truncate">Ảnh người mẫu AI minh họa</div>
-                    <div className="text-[9px] text-purple-300 font-mono">Dáng VĐV tham khảo (VTON)</div>
+                    <div className="text-[10px] font-bold uppercase truncate">Người mẫu AI minh họa</div>
+                    <div className="text-[9px] text-purple-300 font-mono">VĐV mang áo thật (VTON)</div>
                   </div>
                 </button>
               </div>

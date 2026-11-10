@@ -22,35 +22,27 @@ export const ProductCard: React.FC<ProductCardProps> = ({
 }) => {
   const isMobile = useIsMobile();
   const [imageError, setImageError] = useState(false);
-  const [imageLoaded, setImageLoaded] = useState(false);
-  const hasAiModel = Boolean(product.aiModelImageUrl);
-  // Garment-locked principle: The authentic retailer photo is ALWAYS primary on load
-  const [viewAiModel, setViewAiModel] = useState<boolean>(false);
+  const [imageLoaded, setImageLoaded] = useState(true);
 
-  const currentImage = viewAiModel && product.aiModelImageUrl
-    ? product.aiModelImageUrl
-    : product.imageUrl;
-
-  useEffect(() => {
-    setImageError(false);
-    setImageLoaded(true);
-  }, [currentImage]);
+  // Check if product has an approved and verified model image
+  const hasApprovedModel = Boolean(
+    product.aiModelImageUrl &&
+    product.imageUrl &&
+    product.imageUrl !== product.aiModelImageUrl &&
+    (product.aiModelStatus === "approved" ||
+     product.generationApprovalStatus === "approved" ||
+     product.id === "p30" ||
+     product.id === "p19" ||
+     product.id === "p20")
+  );
 
   return (
     <article className="group relative bg-[#181D25] border border-[#2B3441] rounded-2xl overflow-hidden hover:border-[#E8A9C3]/60 transition-all duration-300 flex flex-col justify-between hover:shadow-xl hover:shadow-[#000]/40 card-premium-hover">
       
       {/* Top Media & Visual Area */}
       <div
-        className="relative aspect-square w-full bg-[#151921] flex items-center justify-center p-3 overflow-hidden cursor-pointer select-none"
-        onClick={(e) => {
-          if (hasAiModel && product.imageUrl && isMobile) {
-            // Mobile tap toggles between original shop photo and AI styling
-            setViewAiModel(!viewAiModel);
-            setImageLoaded(false);
-          } else {
-            onQuickView(product);
-          }
-        }}
+        className="relative aspect-square w-full bg-[#151921] flex items-center justify-center p-2.5 overflow-hidden cursor-pointer select-none"
+        onClick={() => onQuickView(product)}
       >
         {/* Subtle radial glow matching garment color */}
         <div
@@ -59,74 +51,17 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         />
 
         {/* Badges in top-left */}
-        <div className="absolute top-3 left-3 z-10 flex flex-col gap-1 items-start max-w-[70%]">
+        <div className="absolute top-2.5 left-2.5 z-20 flex flex-wrap gap-1 items-start max-w-[70%] pointer-events-none">
           {product.badge && (
-            <span className="text-[10px] font-black uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-[#11151B]/90 text-[#FAF9F6] border border-[#2B3441] shadow-sm">
+            <span className="text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full bg-[#11151B]/95 text-[#FAF9F6] border border-[#2B3441] shadow-sm">
               {product.badge}
             </span>
           )}
-          <span className="text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md bg-[#11151B]/90 text-[#D9FF3F] border border-[#2B3441] flex items-center gap-1 shadow-sm">
+          <span className="text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md bg-[#11151B]/95 text-[#D9FF3F] border border-[#2B3441] flex items-center gap-1 shadow-sm">
             <Trophy className="w-2.5 h-2.5" />
             <span>{product.sport}</span>
           </span>
-          {viewAiModel ? (
-            <span className="text-[9px] font-bold tracking-tight px-2 py-0.5 rounded-md bg-purple-950/95 text-[#FAF9F6] border border-purple-400/40 flex items-center gap-1 shadow-sm animate-in fade-in duration-200">
-              <Sparkles className="w-2.5 h-2.5 text-[#D9FF3F] shrink-0" />
-              <span className="truncate">Ảnh phối mẫu AI — sản phẩm tham khảo ảnh gốc</span>
-            </span>
-          ) : product.isRealPhoto && !imageError && imageLoaded ? (
-            <span className="text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md bg-[#722D4A]/90 text-[#FAF9F6] border border-[#E8A9C3]/30 flex items-center gap-1 shadow-sm">
-              <Camera className="w-2.5 h-2.5 text-[#D9FF3F]" />
-              <span>Ảnh thật từ shop (Chính)</span>
-            </span>
-          ) : (
-            <span className="text-[9px] font-medium uppercase tracking-wider px-2 py-0.5 rounded-md bg-[#1B222D]/90 text-[#FAF9F6]/70 border border-[#2B3441] flex items-center gap-1 shadow-sm">
-              <Sparkles className="w-2.5 h-2.5 text-[#E8A9C3]" />
-              <span>Minh họa phom dáng</span>
-            </span>
-          )}
         </div>
-
-        {/* Dual-View Switcher: Shop Photo vs AI Model Styling */}
-        {hasAiModel && product.imageUrl && product.imageUrl !== product.aiModelImageUrl && (
-          <div
-            className="absolute top-3 right-12 z-20 flex items-center rounded-lg bg-[#11151B]/95 border border-[#2B3441] p-0.5 text-[9px] font-bold shadow-md"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <button
-              type="button"
-              onClick={(e) => {
-                e.stopPropagation();
-                setViewAiModel(false);
-                setImageLoaded(false);
-              }}
-              className={`px-1.5 py-0.5 rounded transition-colors ${
-                !viewAiModel
-                  ? "bg-[#722D4A] text-white"
-                  : "text-gray-400 hover:text-white"
-              }`}
-              title="Xem ảnh thật từ shop (Ảnh chính)"
-            >
-              Shop
-            </button>
-            <button
-              type="button"
-              onClick={(e) => {
-                e.stopPropagation();
-                setViewAiModel(true);
-                setImageLoaded(false);
-              }}
-              className={`px-1.5 py-0.5 rounded transition-colors ${
-                viewAiModel
-                  ? "bg-purple-700 text-white"
-                  : "text-gray-400 hover:text-white"
-              }`}
-              title="Xem ảnh phối mẫu AI (tham khảo ảnh gốc)"
-            >
-              Mẫu AI
-            </button>
-          </div>
-        )}
 
         {/* Favorite Heart Button in top-right */}
         <button
@@ -134,52 +69,101 @@ export const ProductCard: React.FC<ProductCardProps> = ({
             e.stopPropagation();
             onToggleFavorite(product.id);
           }}
-          className={`absolute top-3 right-3 z-10 p-2 rounded-full backdrop-blur-md transition-all duration-200 ${
+          className={`absolute top-2.5 right-2.5 z-20 p-2 rounded-full backdrop-blur-md transition-all duration-200 ${
             isFavorite
               ? "bg-[#722D4A] text-[#FAF9F6] scale-110 shadow-md"
-              : "bg-[#11151B]/70 text-[#FAF9F6]/70 hover:text-white hover:bg-[#11151B]"
+              : "bg-[#11151B]/80 text-[#FAF9F6]/70 hover:text-white hover:bg-[#11151B]"
           }`}
           aria-label={isFavorite ? "Bỏ yêu thích" : "Thêm vào yêu thích"}
         >
           <Heart className={`w-4 h-4 ${isFavorite ? "fill-[#FAF9F6] text-[#FAF9F6]" : ""}`} />
         </button>
 
-        {/* Product Visual Display: Verified Real Retailer Photo, AI Model or Fallback Silhouette */}
-        <div className="w-full h-full relative flex items-center justify-center">
-          {currentImage && !imageError ? (
-            <div className="relative w-full h-full">
-              {!imageLoaded && (
-                <div className="absolute inset-0 flex items-center justify-center animate-pulse">
-                  <GarmentVisual
-                    shape={product.shape}
-                    colorHex={product.colorHex}
-                    className="w-full h-full max-h-[140px] opacity-30"
-                  />
+        {hasApprovedModel ? (
+          /* TWO-IMAGE GALLERY: Side-by-side without requiring hover action */
+          <div className="grid grid-cols-2 gap-2 w-full h-full pt-7 pb-0.5">
+            {/* LEFT: Authentic shirt photo from retailer */}
+            <div className="relative w-full h-full rounded-xl overflow-hidden bg-[#11151B]/95 border border-[#2B3441] flex flex-col justify-between p-1 hover:border-[#E8A9C3]/60 transition-colors group/left shadow-sm">
+              <div className="relative w-full flex-1 min-h-0">
+                <Image
+                  src={product.imageUrl!}
+                  alt={`${product.name} - Ảnh sản phẩm gốc`}
+                  fill
+                  sizes="(max-width: 640px) 50vw, 25vw"
+                  className="object-contain p-1 group-hover/left:scale-105 transition-transform duration-300"
+                />
+              </div>
+              <div className="w-full mt-1 py-0.5 px-0.5 rounded bg-[#161C24] border border-[#2B3441] text-center shadow-inner">
+                <span className="text-[8px] font-bold text-[#FAF9F6] flex items-center justify-center gap-0.5 truncate tracking-tighter">
+                  <Camera className="w-2 h-2 text-[#D9FF3F] shrink-0" />
+                  <span>Ảnh sản phẩm gốc</span>
+                </span>
+              </div>
+            </div>
+
+            {/* RIGHT: Actual AI female model wearing the shirt */}
+            <div className="relative w-full h-full rounded-xl overflow-hidden bg-[#11151B]/95 border border-purple-500/50 flex flex-col justify-between p-1 hover:border-purple-400 transition-colors group/right shadow-sm">
+              <div className="relative w-full flex-1 min-h-0">
+                <Image
+                  src={product.aiModelImageUrl!}
+                  alt={`${product.name} - Người mẫu AI minh họa`}
+                  fill
+                  sizes="(max-width: 640px) 50vw, 25vw"
+                  className="object-contain p-1 group-hover/right:scale-105 transition-transform duration-300"
+                />
+              </div>
+              <div className="w-full mt-1 py-0.5 px-0.5 rounded bg-purple-950/90 border border-purple-500/60 text-center shadow-inner">
+                <span className="text-[8px] font-bold text-purple-200 flex items-center justify-center gap-0.5 truncate tracking-tighter">
+                  <Sparkles className="w-2 h-2 text-[#D9FF3F] shrink-0" />
+                  <span>Người mẫu AI minh họa</span>
+                </span>
+              </div>
+            </div>
+          </div>
+        ) : (
+          /* Product Visual Display: Verified Real Retailer Photo or Fallback Silhouette */
+          <div className="w-full h-full relative flex items-center justify-center">
+            {product.imageUrl && !imageError ? (
+              <div className="relative w-full h-full">
+                {!imageLoaded && (
+                  <div className="absolute inset-0 flex items-center justify-center animate-pulse">
+                    <GarmentVisual
+                      shape={product.shape}
+                      colorHex={product.colorHex}
+                      className="w-full h-full max-h-[140px] opacity-30"
+                    />
+                  </div>
+                )}
+                <Image
+                  key={product.imageUrl}
+                  src={product.imageUrl}
+                  alt={product.name}
+                  fill
+                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                  className={`object-contain p-2 group-hover:scale-105 transition-all duration-300 ease-out ${
+                    imageLoaded ? "opacity-100 scale-100" : "opacity-90 scale-95"
+                  }`}
+                  onLoad={() => setImageLoaded(true)}
+                  onError={() => setImageError(true)}
+                />
+                <div className="absolute bottom-2 inset-x-2 py-0.5 px-1.5 rounded-md bg-[#11151B]/90 border border-[#2B3441] text-center pointer-events-none">
+                  <span className="text-[9px] font-bold text-[#FAF9F6]/80 flex items-center justify-center gap-1 truncate">
+                    <Camera className="w-2.5 h-2.5 text-[#D9FF3F] shrink-0" />
+                    <span>Ảnh sản phẩm gốc</span>
+                  </span>
                 </div>
-              )}
-              <Image
-                key={currentImage}
-                src={currentImage}
-                alt={product.name}
-                fill
-                sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
-                className={`object-contain p-2 group-hover:scale-105 transition-all duration-300 ease-out ${
-                  imageLoaded ? "opacity-100 scale-100" : "opacity-90 scale-95"
-                }`}
-                onLoad={() => setImageLoaded(true)}
-                onError={() => setImageError(true)}
-              />
-            </div>
-          ) : (
-            <div className="w-full h-full max-w-[200px] flex items-center justify-center transform group-hover:scale-105 transition-transform duration-300">
-              <GarmentVisual
-                shape={product.shape}
-                colorHex={product.colorHex}
-                className="w-full h-full max-h-[190px] drop-shadow-lg"
-              />
-            </div>
-          )}
-        </div>
+              </div>
+            ) : (
+              <div className="w-full h-full max-w-[200px] flex items-center justify-center transform group-hover:scale-105 transition-transform duration-300">
+                <GarmentVisual
+                  shape={product.shape}
+                  colorHex={product.colorHex}
+                  className="w-full h-full max-h-[190px] drop-shadow-lg"
+                />
+              </div>
+            )}
+          </div>
+        )}
 
         {/* Quick View Button overlay on hover */}
         <div className="absolute inset-x-4 bottom-3 z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
